@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Sequence, Union, Callable, Self, TypeVar, Generic, List, overload
+from typing import Optional, Sequence, Union, Self, TypeVar, Generic, List, overload
 
 T = TypeVar('T')
 
@@ -8,7 +8,6 @@ T = TypeVar('T')
 class _DoubleNode(Generic[T]):
     """A node in a doubly-linked list.
 
-    The class is taken from University of Toronto's CSC111 course
     """
     item: T
     prev: Optional[Self] = None
@@ -502,14 +501,4 @@ class DoublyLinkedList(Generic[T]):
         self._last = copy._last
         self._length = copy._length
 
-    def map(self, key=Callable) -> Self:
-        """Return a mapped list to key"""
-        lst = DoublyLinkedList()
 
-        curr = self._first
-
-        while curr is not None:
-            lst.append(key(curr.item))
-            curr = curr.next
-
-        return lst
