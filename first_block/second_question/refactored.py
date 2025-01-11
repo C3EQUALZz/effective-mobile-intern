@@ -9,42 +9,48 @@ INDEX_SHIFT: Final[Tuple[Tuple[int, int], ...]] = ((-1, -1), (0, -1), (1, -1), (
 
 @dataclass(slots=True)
 class Cell:
-    around_mines: int = 0
-    mine: bool = False
-    fl_open: bool = False
+    count_of_around_mines: int = 0
+    is_mine: bool = False
+    is_open: bool = False
 
     def __str__(self) -> str:
-        return "#" if not self.fl_open else self.around_mines if not self.mine else "*"
+        return "#" if not self.is_open else self.count_of_around_mines if not self.is_mine else "*"
 
 
 @dataclass(slots=True)
 class GamePole:
-    n: int
-    m: int
-    pole: List[List[Cell]] = field(init=False)
+    count_of_rows: int
+    count_of_columns: int
+    field: List[List[Cell]] = field(init=False)
 
     def __post_init__(self) -> None:
-        self.pole = [[Cell() for _ in range(self.m)] for _ in range(self.n)]
+        self.field = [[Cell() for _ in range(self.count_of_columns)] for _ in range(self.count_of_rows)]
 
         count_of_mines: int = 0
-        while count_of_mines < self.m:
+        while count_of_mines < self.count_of_columns:
 
-            i, j = (randint(0, self.n - 1) for _ in range(2))
+            i, j = (randint(0, self.count_of_rows - 1) for _ in range(2))
 
-            if self.pole[i][j].mine:
+            if self.field[i][j].is_mine:
                 continue
 
-            self.pole[i][j].mine = True
+            self.field[i][j].is_mine = True
             count_of_mines += 1
 
-        for x, y in product(range(self.n), range(self.n)):
-            if not self.pole[x][y].mine:
-                self.pole[x][y].around_mines = sum((self.pole[x + i][y + j].mine for i, j in INDEX_SHIFT if
-                                                    0 <= x + i < self.n and 0 <= y + j < self.n))
+        for x, y in product(range(self.count_of_rows), range(self.count_of_rows)):
+            if not self.field[x][y].is_mine:
+                count_of_mines: int = sum(
+                    (
+                        self.field[x + i][y + j].is_mine
+                        for i, j in INDEX_SHIFT
+                        if 0 <= x + i < self.count_of_rows and 0 <= y + j < self.count_of_rows
+                    )
+                )
+                self.field[x][y].count_of_around_mines = count_of_mines
 
     def __str__(self) -> str:
         result: deque[str] = deque()
-        for row in self.pole:
+        for row in self.field:
             formatted_row: map = map(str, row)
             result.append(" ".join(formatted_row))
         return "\n".join(result)

@@ -32,8 +32,14 @@ class GamePole:
 
         for x, y in product(range(self.__n), range(self.__n)):
             if not self.pole[x][y].mine:
-                self.pole[x][y].around_mines = sum((self.pole[x + i][y + j].mine for i, j in INDEX_SHIFT if
-                                                    0 <= x + i < self.__n and 0 <= y + j < self.__n))
+                count_of_mines: int = sum(
+                    (
+                        self.pole[x + i][y + j].mine
+                        for i, j in INDEX_SHIFT
+                        if 0 <= x + i < self.__n and 0 <= y + j < self.__n
+                    )
+                )
+                self.pole[x][y].around_mines = count_of_mines
 
     def show(self) -> None:
         """
