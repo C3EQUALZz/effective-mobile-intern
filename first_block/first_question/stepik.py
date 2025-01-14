@@ -2,6 +2,7 @@ from typing import Optional, TypeVar, Generic, List
 
 T = TypeVar('T')
 
+
 class ObjList(Generic[T]):
     """Объекты класса ObjList должны иметь следующий набор приватных локальных свойств:
     __next - ссылка на следующий объект связного списка (если следующего объекта нет, то __next = None);
