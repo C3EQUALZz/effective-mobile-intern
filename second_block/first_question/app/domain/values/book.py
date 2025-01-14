@@ -15,3 +15,16 @@ class Genre(BaseValueObject[str]):
     @override
     def as_generic_type(self) -> str:
         return str(self.value)
+
+
+@dataclass(frozen=True)
+class Author(BaseValueObject[str]):
+    name: str
+
+    @override
+    def validate(self) -> str:
+        ...
+
+    @override
+    def as_generic_type(self) -> str:
+        return str(self.name)

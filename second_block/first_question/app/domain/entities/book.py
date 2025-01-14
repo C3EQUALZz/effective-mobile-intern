@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 from app.domain.entities.base import BaseEntity
-from app.domain.values.author import Author
-from app.domain.values.book import Genre
+from app.domain.values.book import Genre, Author
 
 
 @dataclass(eq=False, slots=True)
