@@ -6,8 +6,8 @@ T = TypeVar('T')
 
 @dataclass(slots=True)
 class _DoubleNode(Generic[T]):
-    """A node in a doubly-linked list.
-
+    """
+    Узел двух связного списка.
     """
     item: T
     prev: Optional[Self] = None
@@ -16,7 +16,10 @@ class _DoubleNode(Generic[T]):
 
 class DoublyLinkedList(Generic[T]):
     """
-    The class represents a Doubly linked-list
+    Двусвязный список, который является модификацией связного списка.
+    Более подробно про двух связные списки можете почитать здесь:
+    - https://ru.hexlet.io/courses/basic-algorithms/lessons/double-linked-list/theory_unit
+    - https://habr.com/ru/companies/otus/articles/849482/
     """
 
     @overload
@@ -35,6 +38,11 @@ class DoublyLinkedList(Generic[T]):
                  items: Optional[Sequence[T]] = None,
                  first: Optional[_DoubleNode[T]] = None,
                  last: Optional[_DoubleNode[T]] = None) -> None:
+
+        self._first: Optional[_DoubleNode[T]]
+        self._last: Optional[_DoubleNode[T]]
+        self._length: int
+
         if items is not None:
             self.__initialize_from_items(items)
         elif first is not None and last is not None:
@@ -66,24 +74,43 @@ class DoublyLinkedList(Generic[T]):
         self._first = first
         self._last = last
 
-        count = 0
-        curr = self._first
+        count: int = 0
+        curr: _DoubleNode[T] = self._first
 
         while curr is not None:
             count += 1
             curr = curr.next
 
-        self._length = count
+        self._length: int = count
 
     def __len__(self) -> int:
         """
-        Return the number of elements in this list.
+        Количество элементов в связном списке
         """
         return self._length
 
+    @overload
+    def __getitem__(self, index: int) -> T:
+        """
+        Метод для получения элемента под индексом.
+        Сложность O(n).
+        :param index: Индекс, под которым вы хотите получить элемент.
+        """
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Self:
+        """
+        Метод для получения коллекции элементов с помощью среза.
+        В данном случае срез возвращает DoubleLinkedList.
+        :param index: Срез - пара вида [start:stop:step]
+        """
+        ...
+
     def __getitem__(self, i: Union[int, slice]) -> Union[T, Self]:
         """
-        Return the item stored at index i in this linked list.
+        Метод для получения элемента под нужным индексом.
+        Здесь сложность O(n).
         """
         if isinstance(i, int):
             if i < 0:
@@ -92,15 +119,18 @@ class DoublyLinkedList(Generic[T]):
             if i >= len(self):
                 raise IndexError
 
+            # С целью небольшой оптимизации будем идти с разных сторон.
+            # Если индекс находится до середины связного списка, то будем начинать с вершины.
             elif i <= len(self) / 2:
-                curr = self._first
-                curr_index = 0
+                curr: _DoubleNode[T] = self._first
+                curr_index: int = 0
                 while curr is not None:
                     if i == curr_index:
                         return curr.item
                     curr = curr.next
                     curr_index += 1
 
+            # Если индекс находится после середины, то будем идти с хвоста связного списка.
             elif i >= len(self) / 2:
                 curr = self._last
                 curr_index = len(self) - 1
@@ -111,8 +141,8 @@ class DoublyLinkedList(Generic[T]):
                     curr_index -= 1
 
         elif isinstance(i, slice):
-            start = i.start
-            stop = i.stop
+            start: int = i.start
+            stop: int = i.stop
 
             if start is None:
                 start = 0
@@ -120,10 +150,10 @@ class DoublyLinkedList(Generic[T]):
                 stop = self._length
 
             if not (0 <= start <= stop <= len(self)):
-                raise IndexError
+                raise IndexError("Index must be between 0 and len(self) - 1")
             else:
-                new_linked_list = DoublyLinkedList([])
-                index = 0
+                new_linked_list: DoublyLinkedList[T] = DoublyLinkedList([])
+                index: int = 0
 
                 for item in self:
                     if start <= index < stop:
@@ -134,9 +164,9 @@ class DoublyLinkedList(Generic[T]):
 
     def append(self, item: T) -> None:
         """
-        Append the item to the end of the list
+        Добавить элемент в конец списка.
         """
-        new_node = _DoubleNode(item, self._last)
+        new_node: _DoubleNode[T] = _DoubleNode(item, self._last)
 
         if len(self) == 0:
             self._first = self._last = new_node
@@ -149,13 +179,11 @@ class DoublyLinkedList(Generic[T]):
 
     def to_list(self) -> List[T]:
         """
-        Return a built-in Python list containing the items of this linked list.
-
-        The items in this linked list appear in the same order in the returned list.
+        Возвращает встроенный Python список, содержащий элементы связного списка.
         """
-        items_so_far = []
+        items_so_far: List[T] = []
 
-        curr = self._first
+        curr: _DoubleNode[T] = self._first
         while curr is not None:
             items_so_far.append(curr.item)
             curr = curr.next
@@ -164,14 +192,16 @@ class DoublyLinkedList(Generic[T]):
 
     def __contains__(self, item: T) -> bool:
         """
-        Return whether item is in this linked list.
+        Проверка наличия элемента в LinkedList.
+        В худшем случае O(n).
+        :param item: Элемент связного списка, который мы хотим найти.
         """
         if len(self) == 0:
             return False
 
         elif len(self) % 2 != 0:
-            curr_from_start = self._first
-            curr_from_end = self._last
+            curr_from_start: _DoubleNode[T] = self._first
+            curr_from_end: _DoubleNode[T] = self._last
 
             while curr_from_start != curr_from_end:
                 if curr_from_end.item == item or curr_from_start.item == item:
@@ -198,32 +228,36 @@ class DoublyLinkedList(Generic[T]):
 
     def insert(self, i: int, item: T) -> None:
         """
-        Insert the item at index i in the list
+        Вставка элемента под нужным индексом в списке.
+        Сложность O(n) из-за поиска элемента.
+
+        :param i: Индекс элемента в связном списке.
+        :param item: Элемент, который мы хотим вставить.
         """
         if i < 0:
             i = len(self) + i
 
         if i > len(self):
-            raise IndexError
+            raise IndexError("Index out of range. It's bigger than the length of the linked list.")
 
         elif i <= len(self) / 2:
-            curr = self._first
-            curr_index = 0
+            curr: _DoubleNode[T] = self._first
+            curr_index: int = 0
 
             if i == 0:
                 if self._first:
-                    new_node = _DoubleNode(item, next=self._first)
+                    new_node: _DoubleNode[T] = _DoubleNode(item, next=self._first)
                     self._first.prev = new_node
                     self._first = new_node
                 else:
-                    self._first = _DoubleNode(item)
+                    self._first: _DoubleNode[T] = _DoubleNode(item)
                     self._last = self._first
                 self._length += 1
                 return
 
             while curr is not None:
                 if curr_index == i - 1:
-                    new_node = _DoubleNode(item, curr, curr.next)
+                    new_node: _DoubleNode[T] = _DoubleNode(item, curr, curr.next)
                     if curr.next:
                         curr.next.prev = new_node
                     curr.next = new_node
@@ -233,7 +267,7 @@ class DoublyLinkedList(Generic[T]):
                 curr_index += 1
 
         elif i > len(self) / 2:
-            curr = self._last
+            curr: _DoubleNode[T] = self._last
             curr_index = len(self) - 1
 
             while curr is not None:
@@ -248,18 +282,22 @@ class DoublyLinkedList(Generic[T]):
                 curr_index -= 1
 
     def pop(self, i: int) -> T:
+        """
+        Удаляет элемент из связного списка.
+        :param i: Индекс элемента, который мы хотим удалить. Может быть и отрицательным.
+        """
         if i < 0:
             i = len(self) + i
 
         if i >= len(self):
-            raise IndexError
+            raise IndexError("Index out of range. It's bigger than the length of the linked list.")
 
         elif i <= len(self) / 2:
-            curr = self._first
-            curr_index = 0
+            curr: _DoubleNode[T] = self._first
+            curr_index: int = 0
 
             if i == 0:
-                item = self._first.item
+                item: T = self._first.item
                 self._first = self._first.next
 
                 if self._first:
@@ -313,8 +351,11 @@ class DoublyLinkedList(Generic[T]):
 
     def __setitem__(self, i: int, item: T) -> None:
         """
-        Store item at index i in this list.
+        Устанавливает элемент под нужным индексом в связном списке.
+        :param i: Индекс элемента в связном списке, должен быть от 0 до длины связного списка.
         """
+        current_index: int
+
         if i < 0:
             i = self._length + i
 
@@ -340,44 +381,52 @@ class DoublyLinkedList(Generic[T]):
                 curr = curr.prev
                 current_index -= 1
         else:
-            raise IndexError
+            raise IndexError("Index is out of range. It must be less than the length of the linked list.")
 
     def index(self, item: T) -> int:
         """
-        Return the index of the first occurrence of the given item in this list.
+        Возвращает индекс элемента, который вы хотите найти в связном списке.
+        :param item: Элемент, который хотите найти.
+        :raises: ValueError в случае того, если элемента нет в связном списке.
         """
 
-        index_so_far = 0
-        curr = self._first
+        index_so_far: int = 0
+        curr: _DoubleNode[T] = self._first
 
         while curr is not None:
             if curr.item == item:
                 return index_so_far
             index_so_far += 1
             curr = curr.next
-        raise ValueError
+        raise ValueError("Item not found in list.")
 
     def __str__(self) -> str:
         """
-        Return a string representation of this list.
+        Возвращает отображение связного списка в виде строки.
         """
         return '[' + ' <--> '.join([str(element) for element in self]) + ']'
 
     def __repr__(self) -> str:
+        """
+        Возвращает отображение связного списка в виде строки для интерпретатора.
+        """
         return f'DoubleLinkedList({self.__str__()})'
 
     def count(self, item: T) -> int:
-        """Return the number of times the given item occurs in this list.
         """
-        count = 0
+        Возвращает количество вхождений элемента в связном списке.
+        :param item: Элемент, количество вхождений которого вы хотите узнать.
+        :returns: Число вхождений.
+        """
+        count: int = 0
 
         if len(self) == 0:
             return count
 
-        curr_from_start = self._first
-        curr_from_end = self._last
+        curr_from_start: _DoubleNode[T] = self._first
+        curr_from_end: _DoubleNode[T] = self._last
 
-        starting_index = 0
+        starting_index: int = 0
 
         if len(self) % 2 == 0:
             starting_index = 1
@@ -386,7 +435,7 @@ class DoublyLinkedList(Generic[T]):
             if self._first.item == item:
                 count += 1
 
-        ending_index = len(self) - 1
+        ending_index: int = len(self) - 1
 
         while starting_index != ending_index:
             if curr_from_start.item == item:
@@ -406,9 +455,15 @@ class DoublyLinkedList(Generic[T]):
         return count
 
     def copy(self) -> Self:
+        """
+        Создает поверхностную копию двух связного списка.
+        """
         return DoublyLinkedList(first=self._first, last=self._last)
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other: "DoublyLinkedList[T]") -> Self:
+        """
+        Магический метод, который определяет поведение
+        """
         copy = self.copy()
 
         curr = other._first
@@ -420,6 +475,13 @@ class DoublyLinkedList(Generic[T]):
         return copy
 
     def sort(self, reverse: Optional[bool] = False):
+        """
+        Сортировка связного списка.
+        Здесь не совсем эффективный по памяти, так как мы создаем список,
+        его сортируем, а потом на основе его создаем свой новый связный список.
+        В результате сложность O(nlog(n)), но по памяти плохо.
+        Вручную автор не захотел писать TimSort.
+        """
         lst = self.to_list()
         lst.sort(reverse=reverse)
         copy = DoublyLinkedList(lst)
@@ -427,12 +489,14 @@ class DoublyLinkedList(Generic[T]):
         self._last = copy._last
 
     def remove(self, item: T) -> None:
-        """Remove the first occurrence
         """
-        curr = self._first
+        Удаляет первое вхождение элемент в связном списке.
+        :param item: Элемент, который мы хотим удалить в связном списке.
+        """
+        curr: _DoubleNode[T] = self._first
 
         if not curr:
-            raise ValueError
+            raise ValueError("Cannot remove item from empty list")
 
         elif curr.item == item:
             self._first = self._first.next
@@ -454,12 +518,18 @@ class DoublyLinkedList(Generic[T]):
                 curr = curr.next
             raise ValueError
 
-    def __eq__(self, other: Self) -> bool:
-        """Return whether this list and the other list are equal.
+    def __eq__(self, other: "DoublyLinkedList[T]") -> bool:
         """
-        curr1 = self._first
-        curr2 = other._first
-        are_equal = True
+        Проверяет равны ли связные списки.
+        Проверка на равенства
+        """
+        # Если по длинам не совпадают, то они автоматически уже не равны.
+        if len(self) != len(other):
+            return False
+
+        curr1: _DoubleNode[T] = self._first
+        curr2: _DoubleNode[T] = other._first
+        are_equal: bool = True
 
         while are_equal and curr1 is not None and curr2 is not None:
             if curr1.item != curr2.item:
@@ -470,7 +540,9 @@ class DoublyLinkedList(Generic[T]):
         return are_equal
 
     def reverse(self) -> None:
-        """Invert the linked list
+        """
+        Разворот связного списка.
+        Меняет текущий связный список, а не возвращает новый.
         """
 
         curr = self._first
@@ -487,11 +559,16 @@ class DoublyLinkedList(Generic[T]):
         self._last = self._first
         self._first = previous
 
-    def extend(self, other: Self) -> None:
-        """Extend self by other linked list"""
-        copy = self.copy()
+    def extend(self, other: "DoublyLinkedList[T]") -> None:
+        """
+        Расширяет текущий связный список, благодаря другому.
+        Сделано с той целью, чтобы повторить поведение, как у обычного Python
+        :param other: Другой связный список, который Вы хотите добавить в текущий.
+        Сложность O(m), где m - длина other.
+        """
+        copy: DoublyLinkedList[T] = self.copy()
 
-        curr = other._first
+        curr: _DoubleNode[T] = other._first
 
         while curr is not None:
             copy.append(curr.item)
@@ -500,5 +577,3 @@ class DoublyLinkedList(Generic[T]):
         self._first = copy._first
         self._last = copy._last
         self._length = copy._length
-
-
