@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime, UTC
+from datetime import datetime, UTC, date
 
 from domain.entities.base import BaseEntity
 from domain.values.trading_result import Count, Total, Volume
@@ -13,7 +13,7 @@ class TradingResultEntity(BaseEntity):
     volume: Volume
     total: Total
     count: Count
-    date: datetime
+    date: date
     created_on: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
     updated_on: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
 

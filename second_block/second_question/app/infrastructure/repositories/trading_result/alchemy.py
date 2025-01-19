@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from sqlalchemy import Result, insert
 from typing_extensions import override
 
 from domain.entities.trading_result import TradingResultEntity
@@ -19,7 +20,11 @@ class SQLAlchemyTradingResultRepository(SQLAlchemyAbstractRepository, TradingRes
 
     @override
     async def add(self, model: TradingResultEntity) -> TradingResultEntity:
-        raise NotImplementedError
+        result: Result = await self._session.execute(
+            insert(TradingResultEntity).values(**await model.to_dict()).returning(TradingResultEntity)
+        )
+
+        return result.scalar_one()
 
     @override
     async def get(self, oid: str) -> Optional[TradingResultEntity]:

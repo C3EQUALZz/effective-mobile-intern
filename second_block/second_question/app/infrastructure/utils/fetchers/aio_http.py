@@ -1,4 +1,5 @@
 import aiohttp
+import io
 from typing_extensions import override
 
 from app.infrastructure.utils.fetchers.base import AbstractFetcher
@@ -18,3 +19,10 @@ class AiohttpFetcher(AbstractFetcher):
             async with session.get(url, headers=self._headers) as response:
                 response.raise_for_status()
                 return await response.text()
+
+    @override
+    async def get_file(self, url: str) -> io.BytesIO:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                response.raise_for_status()
+                return io.BytesIO(await response.read())

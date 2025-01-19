@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import io
 
 
 class AbstractFetcher(ABC):
@@ -17,4 +18,8 @@ class AbstractFetcher(ABC):
         Returns:
             page content (html, json, whatever)
         """
+        ...
+
+    @abstractmethod
+    async def get_file(self, url: str) -> io.BytesIO:
         ...

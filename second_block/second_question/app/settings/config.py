@@ -63,9 +63,22 @@ class SQLAlchemySettings(CommonSettings):
     expire_on_commit: bool = Field(alias="DATABASE_EXPIRE_ON_COMMIT")
 
 
+class KafkaSettings(CommonSettings):
+    """
+    Настройки для Kafka
+    """
+    host: str = Field(alias='KAFKA_HOST')
+    port: int = Field(alias='KAFKA_PORT')
+
+    @property
+    def url(self) -> str:
+        return f"{self.host}:{self.port}"
+
+
 class Settings(CommonSettings):
     """
     Класс настроек, которым в дальнейшем будет оперировать приложение.
     """
     database: DatabaseSettings = DatabaseSettings()
     alchemy_settings: SQLAlchemySettings = SQLAlchemySettings()
+    kafka_settings: KafkaSettings = KafkaSettings()
