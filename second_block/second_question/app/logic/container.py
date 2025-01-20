@@ -2,30 +2,25 @@ import logging
 from typing import cast
 
 from dishka import Provider, from_context, Scope, provide, make_async_container
-from faststream.kafka import KafkaBroker
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
 
 from app.infrastructure.uow.trading_result.alchemy import SQLAlchemyTradingResultUnitOfWork
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
 from app.logic.bootstrap import EventHandlerMapping, CommandHandlerMapping
-from app.logic.commands.trading_result import ParseAllBulletinsFromSphinx
-from app.logic.handlers.trading_result.commands import ParseAllBulletinsFromSphinxCommandHandler
+from app.logic.commands.trading_result import ParseAllBulletinsFromSphinx, GetByExchangeProductId
+from app.logic.handlers.trading_result.commands import ParseAllBulletinsFromSphinxCommandHandler, \
+    GetGetByExchangeProductIdCommandHandler
 from app.settings.config import Settings
 
 logger = logging.getLogger(__name__)
-
-
-class KafkaProvider(Provider):
-    @provide(scope=Scope.APP)
-    async def get_kafka_broker(self, settings: Settings) -> KafkaBroker:
-        return KafkaBroker(settings.kafka_settings.url)
 
 
 class HandlerProvider(Provider):
     @provide(scope=Scope.APP)
     async def get_mapping_command_and_command_handlers(self) -> CommandHandlerMapping:
         return cast(CommandHandlerMapping, {
-            ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler
+            ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
+            GetByExchangeProductId: GetGetByExchangeProductIdCommandHandler
         })
 
     @provide(scope=Scope.APP)
@@ -72,7 +67,6 @@ container = make_async_container(
     DatabaseProvider(),
     HandlerProvider(),
     UoWProvider(),
-    KafkaProvider(),
     context={
         Settings: Settings(),
     },

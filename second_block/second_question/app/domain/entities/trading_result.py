@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime, UTC, date
 
-from domain.entities.base import BaseEntity
-from domain.values.trading_result import Count, Total, Volume
+from app.domain.entities.base import BaseEntity
+from app.domain.values.trading_result import Count, Total, Volume
 
 
 @dataclass(slots=True)
@@ -14,8 +14,8 @@ class TradingResultEntity(BaseEntity):
     total: Total
     count: Count
     date: date
-    created_on: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
-    updated_on: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
+    created_on: date = field(default_factory=lambda: datetime.now(UTC).date(), kw_only=True)
+    updated_on: date = field(default_factory=lambda: datetime.now(UTC).date(), kw_only=True)
 
     @property
     def oil_id(self) -> str:

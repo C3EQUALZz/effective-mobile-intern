@@ -1,29 +1,42 @@
-import asyncio
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
-from faststream import FastStream
-from faststream.kafka import KafkaBroker
+from dishka.integrations.fastapi import setup_dishka
+from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncEngine
-from dishka.integrations.faststream import setup_dishka
+from sqlalchemy.orm import clear_mappers
+
+from app.application.api.trading_result import trading_result_router
 from app.infrastructure.adapters.alchemy.metadata import metadata
 from app.infrastructure.adapters.alchemy.orm import start_mappers
 from app.logic.container import container
-from app.application.consumers.trading_result.handlers import router as trading_result_router
 
 
-async def main() -> None:
-    broker: KafkaBroker = await container.get(KafkaBroker)
-
-    setup_dishka(container=container, app=FastStream(broker=broker))
-
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     engine: AsyncEngine = await container.get(AsyncEngine)
-
     async with engine.begin() as conn:
         await conn.run_sync(metadata.create_all)
 
     start_mappers()
 
-    broker.include_router(trading_result_router)
+    yield
+
+    app.state.dishka_container.close()
+    clear_mappers()
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title="Backend for Parser",
+        description="Backend API written with FastAPI for parsing",
+        root_path="/api",
+        debug=True,
+        lifespan=lifespan,
+    )
+
+    setup_dishka(container=container, app=app)
+
+    app.include_router(trading_result_router)
+
+    return app

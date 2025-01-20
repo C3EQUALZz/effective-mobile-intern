@@ -1,9 +1,9 @@
 from typing import Self
 
-from infrastructure.repositories.trading_result.alchemy import SQLAlchemyTradingResultRepository
-from infrastructure.repositories.trading_result.base import TradingResultRepository
-from infrastructure.uow.base import SQLAlchemyAbstractUnitOfWork
-from infrastructure.uow.trading_result.base import TradingResultUnitOfWork
+from app.infrastructure.repositories.trading_result.alchemy import SQLAlchemyTradingResultRepository
+from app.infrastructure.repositories.trading_result.base import TradingResultRepository
+from app.infrastructure.uow.base import SQLAlchemyAbstractUnitOfWork
+from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
 
 
 class SQLAlchemyTradingResultUnitOfWork(SQLAlchemyAbstractUnitOfWork, TradingResultUnitOfWork):

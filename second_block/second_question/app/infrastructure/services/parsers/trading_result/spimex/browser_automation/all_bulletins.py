@@ -4,11 +4,11 @@ from typing import AsyncGenerator, override, Final, Tuple
 
 from playwright.async_api import async_playwright
 
-from infrastructure.services.parsers.trading_result.spimex.base import AbstractSpimexParser
+from app.infrastructure.services.parsers.trading_result.spimex.base import AbstractSpimexParser
 
 
 class SpimexAllBulletinsParser(AbstractSpimexParser):
-    __URL: Final[str] =  "https://spimex.com/markets/oil_products/trades/results/"
+    __URL: Final[str] = "https://spimex.com/markets/oil_products/trades/results/"
 
     @override
     async def parse(self, start_date: date, end_date: date) -> AsyncGenerator[Tuple[date, io.BytesIO], None]:

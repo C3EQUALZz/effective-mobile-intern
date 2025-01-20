@@ -1,6 +1,6 @@
 from typing import override
 
-from domain.values.base import BaseValueObject
+from app.domain.values.base import BaseValueObject
 from dataclasses import dataclass
 
 

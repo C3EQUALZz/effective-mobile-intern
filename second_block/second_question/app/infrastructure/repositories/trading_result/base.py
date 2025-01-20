@@ -19,6 +19,10 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
     """
 
     @abstractmethod
+    async def get_by_exchange_product_id(self, exchange_product_id: str) -> Optional[TradingResultEntity]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_by_exchange_product_name(self, name: str) -> List[TradingResultEntity]:
         raise NotImplementedError
 

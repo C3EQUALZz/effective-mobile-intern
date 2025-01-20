@@ -1,14 +1,20 @@
 from typing import List, Optional
 
-from sqlalchemy import Result, insert
+from sqlalchemy import Result, insert, select
 from typing_extensions import override
 
-from domain.entities.trading_result import TradingResultEntity
-from infrastructure.repositories.base import SQLAlchemyAbstractRepository
-from infrastructure.repositories.trading_result.base import TradingResultRepository
+from app.domain.entities.trading_result import TradingResultEntity
+from app.infrastructure.repositories.base import SQLAlchemyAbstractRepository
+from app.infrastructure.repositories.trading_result.base import TradingResultRepository
 
 
 class SQLAlchemyTradingResultRepository(SQLAlchemyAbstractRepository, TradingResultRepository):
+    @override
+    async def get_by_exchange_product_id(self, exchange_product_id: str) -> Optional[TradingResultEntity]:
+        result: Result = await self._session.execute(
+            select(TradingResultEntity).filter_by(exchange_product_id=exchange_product_id)
+        )
+        return result.scalar_one_or_none()
 
     @override
     async def get_by_exchange_product_name(self, name: str) -> List[TradingResultEntity]:

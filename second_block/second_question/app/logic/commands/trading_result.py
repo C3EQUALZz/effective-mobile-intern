@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from logic.commands.base import AbstractCommand
+from app.logic.commands.base import AbstractCommand
 
 
 @dataclass(frozen=True)
