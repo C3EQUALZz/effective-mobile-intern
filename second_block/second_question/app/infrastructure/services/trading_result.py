@@ -1,22 +1,30 @@
 from datetime import date
-from typing import Final, Optional, List
+from typing import (
+    Final,
+)
 
 import pandas as pd
 
 from app.domain.entities.trading_result import TradingResultEntity
-from app.domain.values.trading_result import Total, Count, Volume
-from app.infrastructure.exceptions import NoSuchTradingEntityException, AttributeException
+from app.domain.values.trading_result import (
+    Count,
+    Total,
+    Volume,
+)
+from app.infrastructure.exceptions import (
+    AttributeException,
+    NoSuchTradingEntityException,
+)
 from app.infrastructure.services.parsers.trading_result.spimex.base import AbstractSpimexParser
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
 
-SELECTED_COLUMNS: Final[List[str]] = [
-    'Код Инструмента',
-    'Наименование Инструмента',
-    'Базис поставки',
-    'Объем Договоров в единицах измерения',
-    'Обьем Договоров, руб.',
-    'Количество Договоров, шт.'
-
+SELECTED_COLUMNS: Final[list[str]] = [
+    "Код Инструмента",
+    "Наименование Инструмента",
+    "Базис поставки",
+    "Объем Договоров в единицах измерения",
+    "Обьем Договоров, руб.",
+    "Количество Договоров, шт.",
 ]
 
 
@@ -35,14 +43,35 @@ class TradingResultService:
 
             return trading_result_entity
 
-    async def check_existence(
-            self,
-            oid: Optional[str] = None,
-            exchange_product_id: Optional[str] = None,
-    ) -> bool:
+    async def get_by_exchange_product_name(self, exchange_product_name: str) -> TradingResultEntity:
+        async with self._uow as uow:
+            trading_result_entity: TradingResultEntity = await uow.products_market.get_by_exchange_product_name(
+                exchange_product_name
+            )
 
+            if not trading_result_entity:
+                raise NoSuchTradingEntityException(exchange_product_name)
+
+            return trading_result_entity
+
+    async def get_list_by_date_period(self, start: date, end: date) -> list[TradingResultEntity]:
+        async with self._uow as uow:
+            trading_result_entities: list[TradingResultEntity] = await uow.products_market.list_by_date(
+                start_date=start, end_date=end
+            )
+
+            if not trading_result_entities:
+                raise NoSuchTradingEntityException(f"by period {start} - {end}")
+
+            return trading_result_entities
+
+    async def check_existence(
+        self,
+        oid: str | None = None,
+        exchange_product_id: str | None = None,
+    ) -> bool:
         if not (oid or exchange_product_id):
-            raise AttributeException("oid or user_oid")
+            raise AttributeException("oid or exchange_product_id")
 
         async with self._uow as uow:
             score: TradingResultEntity
@@ -64,12 +93,11 @@ class TradingResultService:
             generator_of_results = parser.parse(start_date=start_date, end_date=end_date)
 
             async for date_of_creation, file_content in generator_of_results:  # type: ignore
-
                 df = pd.read_excel(file_content, skiprows=6).iloc[:-2, 1:]
-                df.columns = df.columns.str.replace('\n', ' ')
-                df = df[df['Код Инструмента'].notnull()]  # Убирает строки, где нет кода инструмента
-                df['Количество Договоров, шт.'] = df['Количество Договоров, шт.'].replace('-', 0).astype(int)
-                df = df[df['Количество Договоров, шт.'] > 0]
+                df.columns = df.columns.str.replace("\n", " ")
+                df = df[df["Код Инструмента"].notnull()]  # Убирает строки, где нет кода инструмента
+                df["Количество Договоров, шт."] = df["Количество Договоров, шт."].replace("-", 0).astype(int)
+                df = df[df["Количество Договоров, шт."] > 0]
                 df = df[SELECTED_COLUMNS]
 
                 for _, row in df.iterrows():
@@ -80,7 +108,7 @@ class TradingResultService:
                         volume=Volume(int(row["Объем Договоров в единицах измерения"])),
                         total=Total(int(row["Обьем Договоров, руб."])),
                         count=Count(int(row["Количество Договоров, шт."])),
-                        date=date_of_creation
+                        date=date_of_creation,
                     )
                     await uow.products_market.add(trading_result)
             await uow.commit()

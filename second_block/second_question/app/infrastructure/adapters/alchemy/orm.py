@@ -1,7 +1,16 @@
-from sqlalchemy import Table, Column, Integer, String, DateTime, Uuid
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Integer,
+    String,
+    Table,
+    Uuid,
+)
 
-from app.infrastructure.adapters.alchemy.metadata import mapper_registry
-from app.infrastructure.adapters.alchemy.metadata import metadata
+from app.infrastructure.adapters.alchemy.metadata import (
+    mapper_registry,
+    metadata,
+)
 
 spimex_trading_results_table = Table(
     "spimex_trading_results",

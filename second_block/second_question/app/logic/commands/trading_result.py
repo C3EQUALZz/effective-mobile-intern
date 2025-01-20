@@ -28,3 +28,14 @@ class GetByDeliveryBasisName(AbstractCommand):
 class ParseAllBulletinsFromSphinx(AbstractCommand):
     start_date: date
     end_date: date
+
+
+@dataclass(frozen=True)
+class GetListOfTradesForSpecifiedPeriod(AbstractCommand):
+    start_date: date
+    end_date: date
+
+
+@dataclass(frozen=True)
+class GetLastTradingDates(AbstractCommand):
+    end_date: date

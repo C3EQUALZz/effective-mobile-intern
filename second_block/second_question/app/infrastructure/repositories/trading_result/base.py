@@ -1,11 +1,9 @@
+import builtins
 from abc import (
     ABC,
     abstractmethod,
 )
-from typing import (
-    List,
-    Optional,
-)
+from datetime import date
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.infrastructure.repositories.base import AbstractRepository
@@ -19,15 +17,15 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
     """
 
     @abstractmethod
-    async def get_by_exchange_product_id(self, exchange_product_id: str) -> Optional[TradingResultEntity]:
+    async def get_by_exchange_product_id(self, exchange_product_id: str) -> TradingResultEntity | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_exchange_product_name(self, name: str) -> List[TradingResultEntity]:
+    async def get_by_exchange_product_name(self, name: str) -> TradingResultEntity | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_delivery_basis_name(self, name: str) -> List[TradingResultEntity]:
+    async def get_by_delivery_basis_name(self, name: str) -> list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod
@@ -35,7 +33,7 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get(self, oid: str) -> Optional[TradingResultEntity]:
+    async def get(self, oid: str) -> TradingResultEntity | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -43,9 +41,13 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(self, start: int = 0, limit: int = 10) -> List[TradingResultEntity]:
+    async def list(self, start: int = 0, limit: int = 10) -> list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, oid: str) -> Optional[TradingResultEntity]:
+    async def list_by_date(self, start_date: date, end_date: date) -> builtins.list[TradingResultEntity]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, oid: str) -> TradingResultEntity | None:
         raise NotImplementedError

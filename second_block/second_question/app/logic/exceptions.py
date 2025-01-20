@@ -1,6 +1,4 @@
-from abc import (
-    ABC,
-)
+from abc import ABC
 from dataclasses import dataclass
 from http import HTTPStatus
 

@@ -1,15 +1,36 @@
 import logging
 from typing import cast
 
-from dishka import Provider, from_context, Scope, provide, make_async_container
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
+from dishka import (
+    Provider,
+    Scope,
+    from_context,
+    make_async_container,
+    provide,
+)
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from app.infrastructure.uow.trading_result.alchemy import SQLAlchemyTradingResultUnitOfWork
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
-from app.logic.bootstrap import EventHandlerMapping, CommandHandlerMapping
-from app.logic.commands.trading_result import ParseAllBulletinsFromSphinx, GetByExchangeProductId
-from app.logic.handlers.trading_result.commands import ParseAllBulletinsFromSphinxCommandHandler, \
-    GetGetByExchangeProductIdCommandHandler
+from app.logic.bootstrap import (
+    CommandHandlerMapping,
+    EventHandlerMapping,
+)
+from app.logic.commands.trading_result import (
+    GetByExchangeProductId,
+    GetListOfTradesForSpecifiedPeriod,
+    ParseAllBulletinsFromSphinx,
+)
+from app.logic.handlers.trading_result.commands import (
+    GetGetByExchangeProductIdCommandHandler,
+    GetListOfTradesForSpecifiedPeriodCommandHandler,
+    ParseAllBulletinsFromSphinxCommandHandler,
+)
 from app.settings.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -18,10 +39,14 @@ logger = logging.getLogger(__name__)
 class HandlerProvider(Provider):
     @provide(scope=Scope.APP)
     async def get_mapping_command_and_command_handlers(self) -> CommandHandlerMapping:
-        return cast(CommandHandlerMapping, {
-            ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
-            GetByExchangeProductId: GetGetByExchangeProductIdCommandHandler
-        })
+        return cast(
+            CommandHandlerMapping,
+            {
+                ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
+                GetByExchangeProductId: GetGetByExchangeProductIdCommandHandler,
+                GetListOfTradesForSpecifiedPeriod: GetListOfTradesForSpecifiedPeriodCommandHandler,
+            },
+        )
 
     @provide(scope=Scope.APP)
     async def get_mapping_event_and_event_handlers(self) -> EventHandlerMapping:

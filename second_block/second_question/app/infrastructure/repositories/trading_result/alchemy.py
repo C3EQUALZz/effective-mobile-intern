@@ -1,7 +1,21 @@
-from typing import List, Optional
+import builtins
+from collections.abc import Sequence
+from datetime import date
+from typing import (
+    Any,
+    override,
+)
 
-from sqlalchemy import Result, insert, select
-from typing_extensions import override
+from sqlalchemy import (
+    Result,
+    Row,
+    RowMapping,
+    and_,
+    delete,
+    insert,
+    select,
+    update,
+)
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.infrastructure.repositories.base import SQLAlchemyAbstractRepository
@@ -10,19 +24,31 @@ from app.infrastructure.repositories.trading_result.base import TradingResultRep
 
 class SQLAlchemyTradingResultRepository(SQLAlchemyAbstractRepository, TradingResultRepository):
     @override
-    async def get_by_exchange_product_id(self, exchange_product_id: str) -> Optional[TradingResultEntity]:
+    async def get_by_exchange_product_id(self, exchange_product_id: str) -> TradingResultEntity | None:
         result: Result = await self._session.execute(
             select(TradingResultEntity).filter_by(exchange_product_id=exchange_product_id)
         )
         return result.scalar_one_or_none()
 
     @override
-    async def get_by_exchange_product_name(self, name: str) -> List[TradingResultEntity]:
-        raise NotImplementedError
+    async def get_by_exchange_product_name(self, exchange_product_name: str) -> TradingResultEntity | None:
+        result: Result = await self._session.execute(
+            select(TradingResultEntity).filter_by(exchange_product_name=exchange_product_name)
+        )
+        return result.scalar_one_or_none()
 
     @override
-    async def get_by_delivery_basis_name(self, name: str) -> List[TradingResultEntity]:
-        raise NotImplementedError
+    async def get_by_delivery_basis_name(self, delivery_basis_name: str) -> list[TradingResultEntity]:
+        result: Result = await self._session.execute(
+            select(TradingResultEntity).filter_by(delivery_basis_name=delivery_basis_name)
+        )
+        trading_result_entities: Sequence[Row | RowMapping | Any] = result.scalars().all()
+
+        assert isinstance(trading_result_entities, list)
+        for vote in trading_result_entities:
+            assert isinstance(vote, TradingResultEntity)
+
+        return trading_result_entities
 
     @override
     async def add(self, model: TradingResultEntity) -> TradingResultEntity:
@@ -33,17 +59,50 @@ class SQLAlchemyTradingResultRepository(SQLAlchemyAbstractRepository, TradingRes
         return result.scalar_one()
 
     @override
-    async def get(self, oid: str) -> Optional[TradingResultEntity]:
-        raise NotImplementedError
+    async def get(self, oid: str) -> TradingResultEntity | None:
+        result: Result = await self._session.execute(select(TradingResultEntity).filter_by(oid=oid))
+
+        return result.scalar_one()
 
     @override
     async def update(self, oid: str, model: TradingResultEntity) -> TradingResultEntity:
-        raise NotImplementedError
+        result: Result = await self._session.execute(
+            update(TradingResultEntity)
+            .filter_by(oid=oid)
+            .values(**await model.to_dict(exclude={"id"}))
+            .returning(TradingResultEntity)
+        )
+
+        return result.scalar_one()
 
     @override
-    async def list(self, start: int = 0, limit: int = 10) -> List[TradingResultEntity]:
-        raise NotImplementedError
+    async def list(self, start: int = 0, limit: int = 10) -> list[TradingResultEntity]:
+        result: Result = await self._session.execute(select(TradingResultEntity).offset(start).limit(limit))
+
+        trading_result_entities: Sequence[Row | RowMapping | Any] = result.scalars().all()
+
+        assert isinstance(trading_result_entities, list)
+        for vote in trading_result_entities:
+            assert isinstance(vote, TradingResultEntity)
+
+        return trading_result_entities
 
     @override
-    async def delete(self, oid: str) -> Optional[TradingResultEntity]:
-        raise NotImplementedError
+    async def list_by_date(self, start_date: date, end_date: date) -> builtins.list[TradingResultEntity]:
+        result: Result = await self._session.execute(
+            select(TradingResultEntity).where(
+                and_(TradingResultEntity.date >= start_date, TradingResultEntity.date <= end_date)
+            )
+        )
+
+        trading_result_entities: Sequence[Row | RowMapping | Any] = result.scalars().all()
+
+        assert isinstance(trading_result_entities, list)
+        for vote in trading_result_entities:
+            assert isinstance(vote, TradingResultEntity)
+
+        return trading_result_entities
+
+    @override
+    async def delete(self, oid: str) -> None:
+        await self._session.execute(delete(TradingResultEntity).filter_by(oid=oid))

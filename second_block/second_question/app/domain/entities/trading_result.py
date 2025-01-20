@@ -1,8 +1,19 @@
-from dataclasses import dataclass, field
-from datetime import datetime, UTC, date
+from dataclasses import (
+    dataclass,
+    field,
+)
+from datetime import (
+    UTC,
+    date,
+    datetime,
+)
 
 from app.domain.entities.base import BaseEntity
-from app.domain.values.trading_result import Count, Total, Volume
+from app.domain.values.trading_result import (
+    Count,
+    Total,
+    Volume,
+)
 
 
 @dataclass(slots=True)

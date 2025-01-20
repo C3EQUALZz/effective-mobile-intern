@@ -6,10 +6,7 @@ from dataclasses import (
 )
 from typing import (
     Any,
-    Dict,
     get_type_hints,
-    Optional,
-    Set,
 )
 from uuid import uuid4
 
@@ -36,7 +33,7 @@ class BaseEntity(ABC):
                 except (ValueError, TypeError):
                     raise CastException(f"'{field_name}' with value '{value}' to {field_type}")
 
-    async def to_dict(self, exclude: Optional[Set[str]] = None, include: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def to_dict(self, exclude: set[str] | None = None, include: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Create a dictionary representation of the entity.
 
@@ -44,7 +41,7 @@ class BaseEntity(ABC):
         include: set of model fields, which should be included into dictionary representation.
         """
 
-        data: Dict[str, Any] = asdict(self)
+        data: dict[str, Any] = asdict(self)
 
         # Process nested dictionaries
         for key, value in data.items():

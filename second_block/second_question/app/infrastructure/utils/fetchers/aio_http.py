@@ -1,6 +1,7 @@
-import aiohttp
 import io
-from typing_extensions import override
+from typing import override
+
+import aiohttp
 
 from app.infrastructure.utils.fetchers.base import AbstractFetcher
 

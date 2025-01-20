@@ -5,9 +5,6 @@ from dataclasses import (
 )
 from typing import (
     Any,
-    Dict,
-    Optional,
-    Set,
 )
 
 
@@ -18,7 +15,7 @@ class AbstractEvent(ABC):
     Events represents internal operations, which may be executed.
     """
 
-    def to_dict(self, exclude: Optional[Set[str]] = None, include: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def to_dict(self, exclude: set[str] | None = None, include: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Create a dictionary representation of the model.
 
@@ -26,7 +23,7 @@ class AbstractEvent(ABC):
         include: set of model fields, which should be included into dictionary representation.
         """
 
-        data: Dict[str, Any] = asdict(self)
+        data: dict[str, Any] = asdict(self)
         if exclude:
             for key in exclude:
                 try:

@@ -2,10 +2,10 @@ from abc import ABC
 
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
 from app.logic.handlers.base import (
+    CT,
+    ET,
     AbstractCommandHandler,
     AbstractEventHandler,
-    ET,
-    CT
 )
 
 

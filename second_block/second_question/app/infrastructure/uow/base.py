@@ -2,16 +2,16 @@ from abc import (
     ABC,
     abstractmethod,
 )
+from collections.abc import Generator
 from traceback import TracebackException
 from typing import (
-    Generator,
-    List,
-    Optional,
     Self,
-    Type,
 )
 
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+)
 
 from app.logic.events.base import AbstractEvent
 
@@ -22,16 +22,16 @@ class AbstractUnitOfWork(ABC):
     """
 
     def __init__(self) -> None:
-        self._events: List[AbstractEvent] = []
+        self._events: list[AbstractEvent] = []
 
     async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(
-            self,
-            exc_type: Optional[Type[BaseException]],
-            exc_value: Optional[BaseException],
-            traceback: Optional[TracebackException]
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackException | None,
     ) -> None:
         await self.rollback()
 
@@ -70,10 +70,12 @@ class SQLAlchemyAbstractUnitOfWork(AbstractUnitOfWork):
         self._session: AsyncSession = self._session_factory()
         return await super().__aenter__()
 
-    async def __aexit__(self,
-                        exc_type: Optional[Type[BaseException]],
-                        exc_value: Optional[BaseException],
-                        traceback: Optional[TracebackException]) -> None:
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackException | None,
+    ) -> None:
         await super().__aexit__(exc_type, exc_value, traceback)
         await self._session.close()
 

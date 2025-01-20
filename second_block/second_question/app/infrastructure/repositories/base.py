@@ -4,8 +4,6 @@ from abc import (
 )
 from typing import (
     Generic,
-    List,
-    Optional,
     TypeVar,
 )
 
@@ -29,7 +27,7 @@ class AbstractRepository(ABC, Generic[BaseEntityType]):
         raise NotImplementedError
 
     @abstractmethod
-    async def get(self, oid: str) -> Optional[BaseEntityType]:
+    async def get(self, oid: str) -> BaseEntityType | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -41,7 +39,7 @@ class AbstractRepository(ABC, Generic[BaseEntityType]):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(self, start: int = 0, limit: int = 10) -> List[BaseEntityType]:
+    async def list(self, start: int = 0, limit: int = 10) -> list[BaseEntityType]:
         raise NotImplementedError
 
 
