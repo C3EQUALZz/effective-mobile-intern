@@ -27,7 +27,7 @@ from app.logic.commands.trading_result import (
     ParseAllBulletinsFromSphinx,
 )
 from app.logic.handlers.trading_result.commands import (
-    GetGetByExchangeProductIdCommandHandler,
+    GetByExchangeProductIdCommandHandler,
     GetListOfTradesForSpecifiedPeriodCommandHandler,
     ParseAllBulletinsFromSphinxCommandHandler,
 )
@@ -43,7 +43,7 @@ class HandlerProvider(Provider):
             CommandHandlerMapping,
             {
                 ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
-                GetByExchangeProductId: GetGetByExchangeProductIdCommandHandler,
+                GetByExchangeProductId: GetByExchangeProductIdCommandHandler,
                 GetListOfTradesForSpecifiedPeriod: GetListOfTradesForSpecifiedPeriodCommandHandler,
             },
         )

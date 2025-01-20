@@ -17,15 +17,30 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
     """
 
     @abstractmethod
-    async def get_by_exchange_product_id(self, exchange_product_id: str) -> TradingResultEntity | None:
+    async def get_by_exchange_product_id(
+            self,
+            exchange_product_id: str,
+            start: int = 0,
+            limit: int = 10
+    ) -> list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_exchange_product_name(self, name: str) -> TradingResultEntity | None:
+    async def get_by_exchange_product_name(
+            self,
+            name: str,
+            start: int = 0,
+            limit: int = 10
+    ) -> list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_delivery_basis_name(self, name: str) -> list[TradingResultEntity]:
+    async def get_by_delivery_basis_name(
+            self,
+            name: str,
+            start: int = 0,
+            limit: int = 10
+    ) -> list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod
@@ -45,7 +60,13 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list_by_date(self, start_date: date, end_date: date) -> builtins.list[TradingResultEntity]:
+    async def list_by_date(
+            self,
+            start_date: date,
+            end_date: date,
+            start: int = 0,
+            limit: int = 10
+    ) -> builtins.list[TradingResultEntity]:
         raise NotImplementedError
 
     @abstractmethod

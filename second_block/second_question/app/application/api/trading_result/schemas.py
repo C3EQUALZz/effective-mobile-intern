@@ -1,13 +1,18 @@
 from datetime import date
 from typing import Self
 
-from domain.entities.trading_result import TradingResultEntity
+from app.domain.entities.trading_result import TradingResultEntity
 from pydantic import BaseModel
 
 
 class ParseAllBulletinsSpimexRequest(BaseModel):
     start_date: date
     end_date: date
+
+class GetByProductByExchangeProductIdSchemeRequest(BaseModel):
+    exchange_product_id: str
+    page_number: int
+    page_size: int
 
 
 class TradingResultsSpimexRequest(BaseModel):

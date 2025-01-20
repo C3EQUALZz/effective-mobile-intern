@@ -1,16 +1,17 @@
 from sqlalchemy import (
     Column,
     DateTime,
-    Integer,
     String,
     Table,
-    Uuid,
+    Uuid
 )
 
 from app.infrastructure.adapters.alchemy.metadata import (
     mapper_registry,
     metadata,
 )
+
+from app.infrastructure.adapters.alchemy.type_decorators import VolumeDecorator, TotalDecorator, CountDecorator
 
 spimex_trading_results_table = Table(
     "spimex_trading_results",
@@ -22,9 +23,9 @@ spimex_trading_results_table = Table(
     Column("delivery_basis_id", String),
     Column("delivery_basis_name", String),
     Column("delivery_type_id", String),
-    Column("volume", Integer),
-    Column("total", Integer),
-    Column("count", Integer),
+    Column("volume", VolumeDecorator),
+    Column("total", TotalDecorator),
+    Column("count", CountDecorator),
     Column("date", DateTime),
     Column("created_on", DateTime),
     Column("updated_on", DateTime),

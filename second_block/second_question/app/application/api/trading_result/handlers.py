@@ -9,6 +9,7 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import (
     APIRouter,
     HTTPException,
+    Query
 )
 
 from app.application.api.trading_result.schemas import (
@@ -37,10 +38,12 @@ logger = logging.getLogger(__name__)
 
 @router.get("/last-trading-dates/{end_date}")
 async def get_last_trading_dates(
-    uow: FromDishka[TradingResultUnitOfWork],
-    events: FromDishka[EventHandlerMapping],
-    commands: FromDishka[CommandHandlerMapping],
-    end_date: date = datetime.now().date(),
+        uow: FromDishka[TradingResultUnitOfWork],
+        events: FromDishka[EventHandlerMapping],
+        commands: FromDishka[CommandHandlerMapping],
+        end_date: date = datetime.now().date(),
+        page: int = Query(1, ge=1, description="Номер страницы"),
+        size: int = Query(10, ge=1, le=100, description="Размер страницы")
 ) -> list[TradingResultsSpimexRequest]:
     try:
         bootstrap: Bootstrap = Bootstrap(
@@ -49,7 +52,11 @@ async def get_last_trading_dates(
 
         messagebus: MessageBus = await bootstrap.get_messagebus()
 
-        await messagebus.handle(GetLastTradingDates(end_date))
+        await messagebus.handle(GetLastTradingDates(
+            end_date=end_date,
+            page_number=page,
+            page_size=size
+        ))
 
         return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
@@ -63,11 +70,13 @@ async def get_last_trading_result(): ...
 
 @router.get("/dynamics/{start_date}&{end_date}")
 async def get_dynamics(
-    uow: FromDishka[TradingResultUnitOfWork],
-    events: FromDishka[EventHandlerMapping],
-    commands: FromDishka[CommandHandlerMapping],
-    start_date: date = datetime.now().date(),
-    end_date: date = datetime.now().date(),
+        uow: FromDishka[TradingResultUnitOfWork],
+        events: FromDishka[EventHandlerMapping],
+        commands: FromDishka[CommandHandlerMapping],
+        start_date: date = datetime.now().date(),
+        end_date: date = datetime.now().date(),
+        page_number: int = Query(1, ge=1, description="Номер страницы"),
+        page_size: int = Query(10, ge=1, le=100, description="Размер страницы"),
 ) -> list[TradingResultsSpimexRequest]:
     try:
         bootstrap: Bootstrap = Bootstrap(
@@ -76,7 +85,12 @@ async def get_dynamics(
 
         messagebus: MessageBus = await bootstrap.get_messagebus()
 
-        await messagebus.handle(GetListOfTradesForSpecifiedPeriod(start_date=start_date, end_date=end_date))
+        await messagebus.handle(GetListOfTradesForSpecifiedPeriod(
+            start_date=start_date,
+            end_date=end_date,
+            page_number=page_number,
+            page_size=page_size,
+        ))
 
         return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
@@ -86,11 +100,13 @@ async def get_dynamics(
 
 @router.get("/{exchange_product_id}")
 async def get_product_by_exchange_product_id(
-    exchange_product_id: str,
-    uow: FromDishka[TradingResultUnitOfWork],
-    events: FromDishka[EventHandlerMapping],
-    commands: FromDishka[CommandHandlerMapping],
-) -> TradingResultsSpimexRequest:
+        exchange_product_id: str,
+        uow: FromDishka[TradingResultUnitOfWork],
+        events: FromDishka[EventHandlerMapping],
+        commands: FromDishka[CommandHandlerMapping],
+        page_number: int = Query(1, ge=1, description="Номер страницы"),
+        page_size: int = Query(10, ge=1, le=100, description="Размер страницы"),
+) -> list[TradingResultsSpimexRequest]:
     try:
         bootstrap: Bootstrap = Bootstrap(
             uow=uow, events_handlers_for_injection=events, commands_handlers_for_injection=commands
@@ -98,9 +114,13 @@ async def get_product_by_exchange_product_id(
 
         messagebus: MessageBus = await bootstrap.get_messagebus()
 
-        await messagebus.handle(GetByExchangeProductId(exchange_product_id))
+        await messagebus.handle(GetByExchangeProductId(
+            exchange_product_id=exchange_product_id,
+            page_number=page_number,
+            page_size=page_size
+        ))
 
-        return TradingResultsSpimexRequest.from_entity(messagebus.command_result)
+        return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
     except ApplicationException as e:
         raise HTTPException(status_code=e.status, detail=e.message)
@@ -108,10 +128,10 @@ async def get_product_by_exchange_product_id(
 
 @router.post("parse")
 async def parse_all_bulletins_from_sphinx(
-    scheme: ParseAllBulletinsSpimexRequest,
-    uow: FromDishka[TradingResultUnitOfWork],
-    events: FromDishka[EventHandlerMapping],
-    commands: FromDishka[CommandHandlerMapping],
+        scheme: ParseAllBulletinsSpimexRequest,
+        uow: FromDishka[TradingResultUnitOfWork],
+        events: FromDishka[EventHandlerMapping],
+        commands: FromDishka[CommandHandlerMapping],
 ) -> None:
     try:
         bootstrap: Bootstrap = Bootstrap(

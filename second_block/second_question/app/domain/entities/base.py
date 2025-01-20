@@ -43,11 +43,6 @@ class BaseEntity(ABC):
 
         data: dict[str, Any] = asdict(self)
 
-        # Process nested dictionaries
-        for key, value in data.items():
-            if isinstance(value, dict) and "value" in value:
-                data[key] = value["value"]
-
         # Handle exclude set
         if exclude:
             for key in exclude:
