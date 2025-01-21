@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield
 
-    app.state.dishka_container.close()
+    await app.state.dishka_container.close()
     clear_mappers()
 
 
