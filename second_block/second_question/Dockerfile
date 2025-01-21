@@ -17,6 +17,7 @@ COPY --from=builder requirements.prod.txt /app
 
 RUN apt update -y && \
     apt install -y python3-dev && \
-    pip install --upgrade pip && pip install --no-cache-dir -r requirements.prod.txt
+    pip install --upgrade pip && pip install --no-cache-dir -r requirements.prod.txt \
+    playwright install chromium
 
 COPY . /app/
