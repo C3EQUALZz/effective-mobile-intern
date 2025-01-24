@@ -7,7 +7,7 @@ from dogs.domain.values.shared import Name
 
 
 @dataclass(eq=False)
-class Dog(BaseEntity):
+class DogEntity(BaseEntity):
     """
     Domain entity that represents a dog.
     It has several attributes:

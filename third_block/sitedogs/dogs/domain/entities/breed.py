@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from dogs.domain.entities.base import BaseEntity
-from dogs.domain.values.breed import Size
+from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
 from dogs.domain.values.shared import Name
 
 
@@ -9,7 +9,7 @@ from dogs.domain.values.shared import Name
 class Breed(BaseEntity):
     name: Name
     size: Size
-    friendliness: int
-    train_ability: int
-    shedding_amount: int
-    exercise_needs: int
+    friendliness: Friendliness
+    train_ability: TrainAbility
+    shedding_amount: SheddingAmount
+    exercise_needs: ExerciseNeeds

@@ -80,9 +80,18 @@ class BadDogFavouriteToyException(DomainException):
 
 
 @dataclass(eq=False)
-class SizeException(DomainException):
+class BadSizeException(DomainException):
     value: str
 
     @property
     def message(self) -> str:
         return f"Size {self.value} is invalid. It can be only: 'Tiny', 'Small', 'Medium', 'Large'"
+
+
+@dataclass(eq=False)
+class BadValueBreedException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Value is invalid. {self.value}"
