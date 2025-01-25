@@ -5,7 +5,9 @@ router = Router(tags=['dogs'])
 
 
 @router.get('/')
-def get_all_dogs(request: HttpRequest):
+def get_all_dogs(
+        request: HttpRequest,
+):
     ...
 
 

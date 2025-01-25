@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'anydi.ext.django',
     'dogs'
 ]
 
@@ -126,3 +127,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ANYDI = {
+    "PATCH_NINJA": True,
+    "MODULES": [
+        "dogs.logic.container.ServicesModule"
+    ]
+}

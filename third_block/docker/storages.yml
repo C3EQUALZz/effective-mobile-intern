@@ -23,12 +23,14 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    restart: on-failure
     container_name: pgadmin-third-block
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
       - POSTGRES_HOST=${DATABASE_HOST}
       - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PORT=${DATABASE_PORT}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_DB}
       - PGADMIN_CONFIG_SERVER_MODE=False

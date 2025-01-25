@@ -10,7 +10,8 @@ services:
     ports:
       - "${API_PORT}:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - backend
     env_file:

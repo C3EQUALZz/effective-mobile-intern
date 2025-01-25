@@ -6,7 +6,7 @@ from dogs.domain.values.shared import Name
 
 
 @dataclass(eq=False)
-class Breed(BaseEntity):
+class BreedEntity(BaseEntity):
     name: Name
     size: Size
     friendliness: Friendliness
