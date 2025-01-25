@@ -1,5 +1,6 @@
-from django.db import models
 from typing import Final
+
+from django.db import models
 
 
 class Breed(models.Model):

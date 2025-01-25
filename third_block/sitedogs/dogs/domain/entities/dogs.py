@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from dogs.domain.entities.base import BaseEntity
-from dogs.domain.entities.breed import Breed
+from dogs.domain.entities.breed import BreedEntity
 from dogs.domain.values.dog import Age, Gender, Color, FavouriteFood, FavouriteToy
 from dogs.domain.values.shared import Name
 
@@ -21,7 +21,7 @@ class DogEntity(BaseEntity):
     """
     name: Name
     age: Age
-    breed: Breed
+    breed: BreedEntity
     gender: Gender
     color: Color
     favorite_food: FavouriteFood
