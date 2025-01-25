@@ -1,0 +1,21 @@
+services:
+  app:
+    container_name: django-backend-app
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python sitedogs/manage.py migrate --no-input &&
+             gunicorn --chdir /app/sitedogs sitedogs.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    ports:
+      - "${API_PORT}:8000"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    env_file:
+      - ../.env
+
+networks:
+  backend:
+    driver: bridge
