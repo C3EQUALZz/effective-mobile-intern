@@ -1,9 +1,9 @@
 import re
 from dataclasses import dataclass
-from typing import override
+from typing import override, Literal
 
 from dogs.domain.values.base import BaseValueObject
-from dogs.exceptions.domain import BadNameException, BadDogAgeException, BadDogColorException, \
+from dogs.exceptions.domain import BadDogAgeException, BadDogColorException, \
     BadDogFavouriteFoodException, BadDogFavouriteToyException
 
 
@@ -27,7 +27,7 @@ class Gender(BaseValueObject):
 
     @override
     def validate(self) -> None:
-        if self.value not in ("male", "female"):
+        if self.value not in ("Male", "Female"):
             raise BadDogAgeException(str(self.value))
 
     @override

@@ -131,6 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ANYDI = {
     "PATCH_NINJA": True,
     "MODULES": [
-        "dogs.logic.container.ServicesModule"
+        "dogs.logic.container.BreedsModule",
+        "dogs.logic.container.DogsModule",
     ]
 }

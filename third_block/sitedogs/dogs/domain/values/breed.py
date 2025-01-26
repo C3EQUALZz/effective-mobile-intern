@@ -7,7 +7,7 @@ from dogs.exceptions.domain import BadSizeException, BadValueBreedException
 
 @dataclass(frozen=True)
 class Size(BaseValueObject):
-    value: int
+    value: str
 
     @override
     def validate(self) -> None:
@@ -15,8 +15,8 @@ class Size(BaseValueObject):
             raise BadSizeException("Value must be one of 'Tiny', 'Small', 'Medium', 'Large'")
 
     @override
-    def as_generic_type(self) -> int:
-        return int(self.value)
+    def as_generic_type(self) -> str:
+        return str(self.value)
 
 
 @dataclass(frozen=True)

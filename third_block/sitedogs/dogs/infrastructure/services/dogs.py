@@ -1,4 +1,4 @@
-from typing import List, Optional, Literal, overload
+from typing import List, Optional, overload
 
 from dogs.domain.entities.dogs import DogEntity
 from dogs.exceptions.infrastructure import DogNotFoundException
@@ -48,7 +48,7 @@ class DogsService:
         ...
 
     @overload
-    def check_existence(self, name: str, age: int, gender: Literal["Male", "Female"]) -> bool:
+    def check_existence(self, name: str, age: int, gender: str) -> bool:
         ...
 
     def check_existence(self, *args) -> bool:

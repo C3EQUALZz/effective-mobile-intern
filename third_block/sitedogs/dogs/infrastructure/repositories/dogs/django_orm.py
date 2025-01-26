@@ -31,7 +31,7 @@ class DjangoORMDogsRepository(DogsRepository):
 
     @override
     def update(self, oid: str, model: DogEntity) -> DogEntity:
-        Dog.objects.update(**model.to_dict())
+        Dog.objects.filter(oid=oid).update(**model.to_dict(exclude={"oid"}))
         return model
 
     @override

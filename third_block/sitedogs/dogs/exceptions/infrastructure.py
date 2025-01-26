@@ -27,3 +27,12 @@ class DogNotFoundException(InfrastructureException):
     @property
     def status(self) -> int:
         return HTTPStatus.NOT_FOUND.value
+
+
+@dataclass(eq=False)
+class BreedNotFoundException(InfrastructureException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Breed with param {self.value} not found"

@@ -36,23 +36,23 @@ class DogsAdapter(BaseAdapter[Dog, DogEntity]):
     def to_model(self, entity: DogEntity) -> Dog:
         breed: Breed = Breed(
             oid=entity.breed.oid,
-            name=entity.breed.name,
-            size=entity.breed.size,
-            friendliness=entity.breed.friendliness,
-            train_ability=entity.breed.train_ability,
-            shedding_amount=entity.breed.shedding_amount,
-            exercise_needs=entity.breed.exercise_needs
+            name=entity.breed.name.as_generic_type(),
+            size=entity.breed.size.as_generic_type(),
+            friendliness=entity.breed.friendliness.as_generic_type(),
+            train_ability=entity.breed.train_ability.as_generic_type(),
+            shedding_amount=entity.breed.shedding_amount.as_generic_type(),
+            exercise_needs=entity.breed.exercise_needs.as_generic_type(),
         )
 
         dog: Dog = Dog(
             oid=entity.oid,
-            name=entity.name,
-            age=entity.age,
+            name=entity.name.as_generic_type(),
+            age=entity.age.as_generic_type(),
             breed=breed,
-            gender=entity.gender,
-            color=entity.color,
-            favorite_food=entity.favorite_food,
-            favorite_toy=entity.favorite_toy,
+            gender=entity.gender.as_generic_type(),
+            color=entity.color.as_generic_type(),
+            favorite_food=entity.favorite_food.as_generic_type(),
+            favorite_toy=entity.favorite_toy.as_generic_type(),
         )
 
         return dog
