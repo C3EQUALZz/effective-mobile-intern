@@ -4,7 +4,7 @@ LOGS = docker logs
 ENV = --env-file .env
 APP_FILE = docker/app.yml
 STORAGES_FILE= docker/storages.yml
-APP_CONTAINER = microservice-chat-app-backend
+APP_CONTAINER = parser-app-backend
 
 .PHONY: app
 app:
@@ -17,6 +17,10 @@ storages:
 .PHONY: all
 all:
 	$(DC) -f $(STORAGES_FILE) -f $(APP_FILE) $(ENV) up --build -d
+
+.PHONY: all-down
+all-down:
+	$(DC) -f $(STORAGES_FILE) -f $(APP_FILE) $(ENV) down
 
 .PHONY: app-down
 app-down:

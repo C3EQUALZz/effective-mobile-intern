@@ -1,8 +1,7 @@
 services:
   postgres:
     image: postgres
-    container_name: postgres-second-block-first-question
-    hostname: postgreshost
+    container_name: postgres-second-block-second-question
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
@@ -12,21 +11,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 3
+    env_file:
+      - ../.env
+    networks:
+      - backend
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin-second-block-first-question
+    container_name: pgadmin-second-block-second-question
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-      - POSTGRES_HOST=postgreshost
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DB=${DATABASE_DB}
       - PGADMIN_CONFIG_SERVER_MODE=False
       - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
     ports:
@@ -34,10 +33,22 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    user: root
     volumes:
-      - ./entrypoint.sh:/entrypoint.sh
-    entrypoint: ./entrypoint.sh
+      - pgadmin_data:/var/lib/pgadmin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:80" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    env_file:
+      - ../.env
+    networks:
+      - backend
 
 volumes:
   postgres_data:
+  pgadmin_data:
+
+networks:
+  backend:
+    driver: bridge
