@@ -5,7 +5,8 @@ from django.http import HttpRequest
 from ninja import Router
 from ninja.errors import HttpError
 
-from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest
+from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
+    CreateBreedSchemaResponse
 from dogs.exceptions.base import ApplicationException
 from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
     GetAllBreedsWithCountOfDogsForEachBreedCommand, GetBreedByOid, UpdateBreedCommand
@@ -33,6 +34,7 @@ def get_all_breeds(
 @router.post(
     "/",
     summary="Create a new breed",
+    response=CreateBreedSchemaResponse
 )
 def create_breed(
         request: HttpRequest,  # noqa
@@ -40,14 +42,15 @@ def create_breed(
         use_case: CreateBreedUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(CreateBreedCommand(**scheme.model_dump()))
+        return CreateBreedSchemaResponse.from_entity(use_case.execute(CreateBreedCommand(**scheme.model_dump())))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
 
 
 @router.get(
-    '/{breed_id}'
+    '/{breed_id}',
+    summary="Get a specific breed by his oid",
 )
 def get_breed(
         request: HttpRequest, # noqa
@@ -61,7 +64,10 @@ def get_breed(
         raise HttpError(e.status, e.message)
 
 
-@router.put('/{breed_id}')
+@router.put(
+    '/{breed_id}',
+    summary="Update a specific breed by his oid",
+)
 def update_breed(
         request: HttpRequest, # noqa
         scheme: UpdateBreedSchemaRequest,

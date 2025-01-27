@@ -20,9 +20,6 @@ class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
     using dependency injection without disrupting its functionality.
     """
 
-    def __init__(self, adapter: DogsAdapter) -> None:
-        super().__init__(adapter)
-
     @abstractmethod
     def get_by_name_age_gender(self, name: str, age: int, gender: Literal["Male", "Female"]) -> List[DogEntity]:
         raise NotImplementedError

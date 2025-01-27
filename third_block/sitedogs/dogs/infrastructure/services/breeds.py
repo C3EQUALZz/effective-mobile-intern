@@ -2,6 +2,7 @@ from typing import Optional
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.exceptions.infrastructure import BreedNotFoundException
+from dogs.infrastructure.adapters.django_orm.breeds import BreedsAdapter
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.infrastructure.repositories.breeds.base import BreedsRepository
 

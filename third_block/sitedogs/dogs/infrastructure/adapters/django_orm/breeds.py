@@ -1,4 +1,4 @@
-from django.utils.timezone import override
+from typing import override
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
