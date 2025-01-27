@@ -18,7 +18,7 @@ class DjangoORMBreedsRepository(BreedsRepository):
     @override
     def get(self, oid: str) -> Optional[BreedEntity]:
         breed: Optional[Breed] = Breed.objects.get(oid=oid)
-        return None if breed is None else breed
+        return None if breed is None else self._adapter.to_entity(breed)
 
     @override
     def update(self, oid: str, model: BreedEntity) -> BreedEntity:

@@ -16,15 +16,15 @@ class CreateDogUseCase:
         self._breed_service = BreedsService(breed_repository)
 
     def execute(self, command: CreateDogCommand) -> DogEntity:
-        breed: BreedEntity = self._breed_service.get(command.breed_id)
+        breed: BreedEntity = self._breed_service.get(command.breed_oid)
 
         dog: DogEntity = DogEntity(
             name=Name(command.name),
             age=Age(command.age),
             gender=Gender(command.gender),
             color=Color(command.color),
-            favorite_food=FavouriteFood(command.favorite_food),
-            favorite_toy=FavouriteToy(command.favorite_toy),
+            favorite_food=FavouriteFood(command.favourite_food),
+            favorite_toy=FavouriteToy(command.favourite_toy),
             breed=breed,
         )
 

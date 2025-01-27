@@ -43,7 +43,7 @@ def create_dog(
         use_case: CreateDogUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(CreateDogCommand(**scheme.model_dump()))
+        return CreateDogSchemaResponse.from_entity(use_case.execute(CreateDogCommand(**scheme.model_dump())))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)

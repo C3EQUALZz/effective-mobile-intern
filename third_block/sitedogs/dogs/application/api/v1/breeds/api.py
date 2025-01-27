@@ -2,7 +2,7 @@ import logging
 
 import anydi
 from django.http import HttpRequest
-from ninja import Router
+from ninja import Router, Query
 from ninja.errors import HttpError
 
 from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 @router.get('/')
 def get_all_breeds(
         request: HttpRequest,  # noqa
-        page_number: int = 0,
-        page_size: int = 10,
+        page_number: int = Query(default=1, required=False, ge=1),
+        page_size: int = Query(default=10, required=False, ge=1),
         use_case: GetAllBreedsWithCountOfDogsForEachBreedUseCase = anydi.auto
 ):
     try:
