@@ -6,7 +6,7 @@ from ninja import Router, Query
 from ninja.errors import HttpError
 
 from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
-    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse
+    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse, GetBreedByOidSchemaResponse
 from dogs.exceptions.base import ApplicationException
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
@@ -63,6 +63,7 @@ def create_breed(
 @router.get(
     '/{breed_id}',
     summary="Get a specific breed by his oid",
+    response=GetBreedByOidSchemaResponse
 )
 def get_breed(
         request: HttpRequest, # noqa
@@ -70,7 +71,7 @@ def get_breed(
         use_case: GetBreedByOidUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(GetBreedByOid(breed_id))
+        return GetBreedByOidSchemaResponse.from_entity(use_case.execute(GetBreedByOid(breed_id)))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)

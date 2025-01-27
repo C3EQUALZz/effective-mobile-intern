@@ -8,16 +8,7 @@ from dogs.domain.entities.breed import BreedEntity
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 
 
-class CreateBreedSchemaRequest(Schema):
-    name: constr(min_length=1)
-    size: Literal["Tiny", "Small", "Medium", "Large"]
-    friendliness: conint(ge=1, le=5)
-    train_ability: conint(ge=1, le=5)
-    shedding_amount: conint(ge=1, le=5)
-    exercise_needs: conint(ge=1, le=5)
-
-
-class CreateBreedSchemaResponse(Schema):
+class BaseBreedSchemaResponse(Schema):
     oid: UUID
     name: constr(min_length=1)
     size: Literal["Tiny", "Small", "Medium", "Large"]
@@ -39,20 +30,33 @@ class CreateBreedSchemaResponse(Schema):
         )
 
 
-class GetBreedSchemaResponse(Schema):
+class CreateBreedSchemaResponse(BaseBreedSchemaResponse):
+    ...
+
+
+class GetBreedByOidSchemaResponse(BaseBreedSchemaResponse):
     ...
 
 
 class GetAllBreedsSchemaResponse(Schema):
     count: conint(ge=0)
-    breed: CreateBreedSchemaResponse
+    breed: BaseBreedSchemaResponse
 
     @classmethod
     def from_entity(cls, entity: BreedWithCountOfDogs) -> Self:
         return cls(
             count=entity.count,
-            breed=CreateBreedSchemaResponse.from_entity(entity.breed),
+            breed=BaseBreedSchemaResponse.from_entity(entity.breed),
         )
+
+
+class CreateBreedSchemaRequest(Schema):
+    name: constr(min_length=1)
+    size: Literal["Tiny", "Small", "Medium", "Large"]
+    friendliness: conint(ge=1, le=5)
+    train_ability: conint(ge=1, le=5)
+    shedding_amount: conint(ge=1, le=5)
+    exercise_needs: conint(ge=1, le=5)
 
 
 class UpdateBreedSchemaRequest(Schema):
