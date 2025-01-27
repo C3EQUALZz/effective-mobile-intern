@@ -27,7 +27,7 @@ class BreedsService:
         if existing_breed is None:
             raise BreedNotFoundException(f"oid {breed.oid}")
 
-        return self._repository.update(existing_breed.oid, existing_breed)
+        return self._repository.update(existing_breed.oid, breed)
 
     def list_all_breeds_with_count_of_dogs_for_each_breed(
             self,

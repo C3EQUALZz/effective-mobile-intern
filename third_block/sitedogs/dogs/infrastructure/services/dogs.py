@@ -10,8 +10,13 @@ class DogsService:
     def __init__(self, repository: DogsRepository) -> None:
         self._repository = repository
 
-    def get(self, dog_id: str) -> DogEntity:
-        return self._repository.get(dog_id)
+    def get(self, dog_oid: str) -> DogEntity:
+        existing_dog: Optional[DogEntity] = self._repository.get(oid=dog_oid)
+
+        if existing_dog is None:
+            raise DogNotFoundException(f"oid {dog_oid}")
+
+        return existing_dog
 
     def add(self, dog: DogEntity) -> DogEntity:
         return self._repository.add(dog)
@@ -61,8 +66,3 @@ class DogsService:
                     return True
             case _:
                 return False
-
-
-
-
-

@@ -23,7 +23,7 @@ class DjangoORMBreedsRepository(BreedsRepository):
     @override
     def update(self, oid: str, model: BreedEntity) -> BreedEntity:
         Breed.objects.filter(oid=oid).update(**model.to_dict(exclude={"oid"}))
-        return model
+        return self._adapter.to_entity(Breed.objects.get(oid=oid))
 
     @override
     def list(self, start: int = 0, limit: int = 10) -> List[BreedEntity]:

@@ -54,10 +54,7 @@ class BaseEntity(ABC):
         data: Dict[str, Any] = asdict(self)
 
         if convert_value_object_to_python_object:
-            # Process nested dictionaries
-            for key, value in data.items():
-                if isinstance(value, dict) and "value" in value:
-                    data[key] = value["value"]
+            data = self.__process_nested(data)
 
         # Handle exclude set
         if exclude:
@@ -77,3 +74,23 @@ class BaseEntity(ABC):
 
     def __hash__(self) -> int:
         return hash(self.oid)
+
+    def __process_nested(self, data: Any) -> Any:
+        """Helper function to process nested dictionaries or lists."""
+        if isinstance(data, dict):
+            # Process dictionaries
+            processed = {}
+            for key, value in data.items():
+                if isinstance(value, dict) and "value" in value:
+                    # Replace 'value' with its actual content
+                    processed[key] = value["value"]
+                else:
+                    # Recursively process other dictionaries
+                    processed[key] = self.__process_nested(value)
+            return processed
+        elif isinstance(data, list):
+            # Process lists
+            return [self.__process_nested(item) for item in data]
+        else:
+            # Return value as is for other types
+            return data

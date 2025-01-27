@@ -12,3 +12,20 @@ class CreateDogCommand(AbstractCommand):
     color: str
     favourite_food: str
     favourite_toy: str
+
+
+@dataclass(frozen=True)
+class UpdateDogCommand(AbstractCommand):
+    oid: str
+    breed_oid: str
+    name: str
+    age: int
+    gender: str
+    color: str
+    favourite_food: str
+    favourite_toy: str
+
+
+@dataclass(frozen=True)
+class DeleteDogCommand(AbstractCommand):
+    oid: str

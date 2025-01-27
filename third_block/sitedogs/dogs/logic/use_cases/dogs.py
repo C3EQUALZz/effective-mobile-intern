@@ -7,7 +7,7 @@ from dogs.infrastructure.repositories.breeds.base import BreedsRepository
 from dogs.infrastructure.repositories.dogs.base import DogsRepository
 from dogs.infrastructure.services.breeds import BreedsService
 from dogs.infrastructure.services.dogs import DogsService
-from dogs.logic.commands.dogs import CreateDogCommand
+from dogs.logic.commands.dogs import CreateDogCommand, UpdateDogCommand, DeleteDogCommand
 
 
 class CreateDogUseCase:
@@ -32,25 +32,43 @@ class CreateDogUseCase:
 
 
 class UpdateDogUseCase:
-    def __init__(self, repository: DogsRepository) -> None:
-        self._service = DogsService(repository)
+    def __init__(
+            self,
+            dog_repository: DogsRepository,
+            breed_repository: BreedsRepository,
+    ) -> None:
+        self._dog_service = DogsService(dog_repository)
+        self._breed_service = BreedsService(breed_repository)
 
-    def execute(self, dog: DogEntity) -> DogEntity:
-        self._service.check_existence(
-            name=dog.name.as_generic_type(),
-            age=dog.age.as_generic_type(),
-            gender=dog.gender.as_generic_type(),
+    def execute(self, command: UpdateDogCommand) -> DogEntity:
+        breed_entity: BreedEntity = self._breed_service.get(command.breed_oid)
+
+        dog: DogEntity = DogEntity(
+            oid=command.oid,
+            name=Name(command.name),
+            age=Age(command.age),
+            gender=Gender(command.gender),
+            color=Color(command.color),
+            favorite_food=FavouriteFood(command.favourite_food),
+            favorite_toy=FavouriteToy(command.favourite_toy),
+            breed=breed_entity,
         )
 
-        return self._service.update(dog)
+        self._dog_service.check_existence(
+            dog.name.as_generic_type(),
+            dog.age.as_generic_type(),
+            dog.gender.as_generic_type(),
+        )
+
+        return self._dog_service.update(dog)
 
 
 class DeleteDogUseCase:
     def __init__(self, repository: DogsRepository) -> None:
         self._service = DogsService(repository)
 
-    def execute(self, dog_oid: str) -> None:
-        return self._service.delete(dog_oid)
+    def execute(self, command: DeleteDogCommand) -> None:
+        return self._service.delete(command.oid)
 
 
 class GetAllDogsWithAverageAgeForEachBreedUseCase:
@@ -66,4 +84,4 @@ class GetDogByOidWithNumberOfSameBreedUseCase:
         self._service = DogsService(repository)
 
     def execute(self, dog_oid: str) -> DogEntity:
-        ...
+        return self._service.get(dog_oid)

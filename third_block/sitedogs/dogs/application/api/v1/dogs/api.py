@@ -2,14 +2,17 @@ import logging
 
 import anydi
 from django.http import HttpRequest
-from ninja import Router
+from ninja import Router, Query
 from ninja.errors import HttpError
 
-from dogs.application.api.v1.dogs.schemas import CreateDogSchemaRequest, CreateDogSchemaResponse
+from dogs.application.api.v1.dogs.schemas import CreateDogSchemaRequest, CreateDogSchemaResponse, \
+    GetAllDogsWithAverageAgeForEachBreedSchemeResponse, GetDogByOidSchemaResponse, UpdateDogSchemaResponse, \
+    UpdateDogSchemaRequest
 from dogs.exceptions.base import ApplicationException
-from dogs.logic.commands.dogs import CreateDogCommand
+from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
+from dogs.logic.commands.dogs import CreateDogCommand, UpdateDogCommand, DeleteDogCommand
 from dogs.logic.use_cases.dogs import CreateDogUseCase, GetDogByOidWithNumberOfSameBreedUseCase, \
-    GetAllDogsWithAverageAgeForEachBreedUseCase, DeleteDogUseCase
+    GetAllDogsWithAverageAgeForEachBreedUseCase, DeleteDogUseCase, UpdateDogUseCase
 
 router = Router(tags=['dogs'])
 logger = logging.getLogger(__name__)
@@ -17,16 +20,18 @@ logger = logging.getLogger(__name__)
 
 @router.get(
     '/',
-    summary="Gets all dogs with average age for each breed"
+    summary="Handler for get all dogs with average age for each breed",
+    response=list[GetAllDogsWithAverageAgeForEachBreedSchemeResponse]
 )
 def get_all_dogs(
         request: HttpRequest,  # noqa
-        page_number: int = 0,
-        page_size: int = 10,
+        page_number: int = Query(default=1, required=False, ge=1),
+        page_size: int = Query(default=1, required=False, ge=1),
         use_case: GetAllDogsWithAverageAgeForEachBreedUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(page_number, page_size)
+        result: list[DogsWithAverageAgeForEachBreed] = use_case.execute(page_number, page_size)
+        return [GetAllDogsWithAverageAgeForEachBreedSchemeResponse.from_entity(x) for x in result]
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
@@ -49,25 +54,39 @@ def create_dog(
         raise HttpError(e.status, e.message)
 
 
-@router.get('/{dog_id}')
+@router.get(
+    '/{dog_id}',
+    summary="Handler for gets a dog by id",
+    response=GetDogByOidSchemaResponse
+)
 def get_dog_by_id(
         request: HttpRequest,  # noqa
         dog_id: str,
         use_case: GetDogByOidWithNumberOfSameBreedUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(dog_id)
+        return GetDogByOidSchemaResponse.from_entity(use_case.execute(dog_id))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
 
 
-@router.put('/{dog_id}')
+@router.put(
+    '/{dog_id}',
+    summary="Handler for updating a dog by id",
+    response=UpdateDogSchemaResponse
+)
 def update_dog(
         request: HttpRequest,  # noqa
-        dog_id: int
+        scheme: UpdateDogSchemaRequest,
+        use_case: UpdateDogUseCase = anydi.auto
 ):
-    ...
+    try:
+        command: UpdateDogCommand = UpdateDogCommand(**scheme.model_dump())
+        return UpdateDogSchemaResponse.from_entity(use_case.execute(command))
+    except ApplicationException as e:
+        logger.error(e)
+        raise HttpError(e.status, e.message)
 
 
 @router.delete(
@@ -80,4 +99,8 @@ def delete_dog(
         dog_id: str,
         use_case: DeleteDogUseCase = anydi.auto
 ):
-    return use_case.execute(dog_id)
+    try:
+        return use_case.execute(DeleteDogCommand(dog_id))
+    except ApplicationException as e:
+        logger.error(e)
+        raise HttpError(e.status, e.message)

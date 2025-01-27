@@ -41,7 +41,7 @@ class Color(BaseValueObject):
 
     @override
     def validate(self) -> None:
-        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+$')
+        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+(?:\s[A-Za-zА-Яа-яЁё]+)*$')
 
         if re.match(pattern, self.value) is None:
             raise BadDogColorException(self.value)
@@ -57,7 +57,7 @@ class FavouriteFood(BaseValueObject):
 
     @override
     def validate(self) -> None:
-        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+$')
+        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+(?:\s[A-Za-zА-Яа-яЁё]+)*$')
 
         if re.match(pattern, self.value) is None:
             raise BadDogFavouriteFoodException(self.value)
@@ -73,7 +73,7 @@ class FavouriteToy(BaseValueObject):
 
     @override
     def validate(self) -> None:
-        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+$')
+        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+(?:\s[A-Za-zА-Яа-яЁё]+)*$')
 
         if re.match(pattern, self.value) is None:
             raise BadDogFavouriteToyException(self.value)

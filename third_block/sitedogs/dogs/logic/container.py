@@ -22,16 +22,18 @@ class DogsModule(anydi.Module):
         return CreateDogUseCase(dog_repo, breed_repo)
 
     @anydi.provider(scope="singleton")
-    def dogs_update_use_case(self, repo: DogsRepository) -> UpdateDogUseCase:
-        return UpdateDogUseCase(repo)
+    def dogs_update_use_case(self, repo: DogsRepository, breed_repo: BreedsRepository) -> UpdateDogUseCase:
+        return UpdateDogUseCase(repo, breed_repo)
 
     @anydi.provider(scope="singleton")
     def dogs_delete_use_case(self, repo: DogsRepository) -> DeleteDogUseCase:
         return DeleteDogUseCase(repo)
 
     @anydi.provider(scope="singleton")
-    def dogs_get_all_dogs_with_average_year_use_case(self,
-                                                     repo: DogsRepository) -> GetAllDogsWithAverageAgeForEachBreedUseCase:
+    def dogs_get_all_dogs_with_average_year_use_case(
+            self,
+            repo: DogsRepository
+    ) -> GetAllDogsWithAverageAgeForEachBreedUseCase:
         return GetAllDogsWithAverageAgeForEachBreedUseCase(repo)
 
     @anydi.provider(scope="singleton")

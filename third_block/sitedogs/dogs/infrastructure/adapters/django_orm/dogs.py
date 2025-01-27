@@ -13,6 +13,7 @@ class DogsAdapter(BaseAdapter[Dog, DogEntity]):
     @override
     def to_entity(self, model: Dog) -> DogEntity:
         breed: BreedEntity = BreedEntity(
+            oid=str(model.breed.oid),
             name=Name(model.breed.name),
             size=Size(model.breed.size),
             friendliness=Friendliness(model.breed.friendliness),

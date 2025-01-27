@@ -16,7 +16,7 @@ class Name(BaseValueObject):
 
     @override
     def validate(self) -> None:
-        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁёЙй]+$')
+        pattern: re.Pattern[str] = re.compile(r'^[A-Za-zА-Яа-яЁё]+(?:\s[A-Za-zА-Яа-яЁё]+)*$')
 
         if re.match(pattern, self.value) is None:
             raise BadNameException(self.value)
