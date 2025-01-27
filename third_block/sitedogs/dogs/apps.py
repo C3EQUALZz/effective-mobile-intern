@@ -6,4 +6,4 @@ class DogsConfig(AppConfig):
     name = 'dogs'
 
     def ready(self):
-        import dogs.infrastructure.adapters.django_orm.orm # type: ignore
+        import dogs.infrastructure.adapters.django_orm.orm  # type: ignore

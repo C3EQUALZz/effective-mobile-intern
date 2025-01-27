@@ -1,11 +1,22 @@
 from dogs.domain.entities.breed import BreedEntity
-from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
+from dogs.domain.values.breed import (
+    ExerciseNeeds,
+    Friendliness,
+    SheddingAmount,
+    Size,
+    TrainAbility,
+)
 from dogs.domain.values.shared import Name
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.infrastructure.repositories.breeds.base import BreedsRepository
 from dogs.infrastructure.services.breeds import BreedsService
-from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
-    GetAllBreedsWithCountOfDogsForEachBreedCommand, GetBreedByOid, UpdateBreedCommand
+from dogs.logic.commands.breeds import (
+    CreateBreedCommand,
+    DeleteBreedCommand,
+    GetAllBreedsWithCountOfDogsForEachBreedCommand,
+    GetBreedByOid,
+    UpdateBreedCommand,
+)
 
 
 class CreateBreedUseCase:

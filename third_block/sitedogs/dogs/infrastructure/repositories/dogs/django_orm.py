@@ -1,9 +1,21 @@
-from typing import List, Optional, Literal, override
+from typing import (
+    List,
+    Literal,
+    Optional,
+    override,
+)
 
-from django.db.models import Subquery, OuterRef, Avg
+from django.db.models import (
+    Avg,
+    OuterRef,
+    Subquery,
+)
 
 from dogs.domain.entities.dogs import DogEntity
-from dogs.infrastructure.adapters.django_orm.orm import Dog, Breed
+from dogs.infrastructure.adapters.django_orm.orm import (
+    Breed,
+    Dog,
+)
 from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
 from dogs.infrastructure.repositories.dogs.base import DogsRepository
 

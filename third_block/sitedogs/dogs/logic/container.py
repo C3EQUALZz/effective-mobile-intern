@@ -1,15 +1,24 @@
 import anydi
-
 from dogs.infrastructure.adapters.django_orm.breeds import BreedsAdapter
 from dogs.infrastructure.adapters.django_orm.dogs import DogsAdapter
 from dogs.infrastructure.repositories.breeds.base import BreedsRepository
 from dogs.infrastructure.repositories.breeds.django_orm import DjangoORMBreedsRepository
 from dogs.infrastructure.repositories.dogs.base import DogsRepository
 from dogs.infrastructure.repositories.dogs.django_orm import DjangoORMDogsRepository
-from dogs.logic.use_cases.breeds import CreateBreedUseCase, GetBreedByOidUseCase, UpdateBreedUseCase, \
-    DeleteBreedUseCase, GetAllBreedsWithCountOfDogsForEachBreedUseCase
-from dogs.logic.use_cases.dogs import CreateDogUseCase, DeleteDogUseCase, UpdateDogUseCase, \
-    GetAllDogsWithAverageAgeForEachBreedUseCase, GetDogByOidWithNumberOfSameBreedUseCase
+from dogs.logic.use_cases.breeds import (
+    CreateBreedUseCase,
+    DeleteBreedUseCase,
+    GetAllBreedsWithCountOfDogsForEachBreedUseCase,
+    GetBreedByOidUseCase,
+    UpdateBreedUseCase,
+)
+from dogs.logic.use_cases.dogs import (
+    CreateDogUseCase,
+    DeleteDogUseCase,
+    GetAllDogsWithAverageAgeForEachBreedUseCase,
+    GetDogByOidWithNumberOfSameBreedUseCase,
+    UpdateDogUseCase,
+)
 
 
 class DogsModule(anydi.Module):

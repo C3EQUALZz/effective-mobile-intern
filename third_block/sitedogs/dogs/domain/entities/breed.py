@@ -1,7 +1,13 @@
 from dataclasses import dataclass
 
 from dogs.domain.entities.base import BaseEntity
-from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
+from dogs.domain.values.breed import (
+    ExerciseNeeds,
+    Friendliness,
+    SheddingAmount,
+    Size,
+    TrainAbility,
+)
 from dogs.domain.values.shared import Name
 
 

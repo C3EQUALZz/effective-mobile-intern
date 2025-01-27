@@ -1,11 +1,17 @@
-from typing import Literal, Self, cast
+from typing import (
+    cast,
+    Literal,
+    Self,
+)
 from uuid import UUID
-
-from ninja import Schema
-from pydantic import constr, conint
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
+from ninja import Schema
+from pydantic import (
+    conint,
+    constr,
+)
 
 
 class BaseBreedSchemaResponse(Schema):

@@ -2,7 +2,10 @@ from dataclasses import dataclass
 from typing import override
 
 from dogs.domain.values.base import BaseValueObject
-from dogs.exceptions.domain import BadSizeException, BadValueBreedException
+from dogs.exceptions.domain import (
+    BadSizeException,
+    BadValueBreedException,
+)
 
 
 @dataclass(frozen=True)

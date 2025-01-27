@@ -1,10 +1,17 @@
 import re
 from dataclasses import dataclass
-from typing import override, Literal
+from typing import (
+    Literal,
+    override,
+)
 
 from dogs.domain.values.base import BaseValueObject
-from dogs.exceptions.domain import BadDogAgeException, BadDogColorException, \
-    BadDogFavouriteFoodException, BadDogFavouriteToyException
+from dogs.exceptions.domain import (
+    BadDogAgeException,
+    BadDogColorException,
+    BadDogFavouriteFoodException,
+    BadDogFavouriteToyException,
+)
 
 
 @dataclass(frozen=True)

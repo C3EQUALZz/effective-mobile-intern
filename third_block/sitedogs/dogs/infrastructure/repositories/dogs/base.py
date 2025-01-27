@@ -4,8 +4,9 @@ from abc import (
 )
 from typing import (
     List,
-    Optional, )
-from typing import Literal
+    Literal,
+    Optional,
+)
 
 from dogs.domain.entities.dogs import DogEntity
 from dogs.infrastructure.adapters.django_orm.dogs import DogsAdapter

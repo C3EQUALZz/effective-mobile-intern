@@ -1,18 +1,38 @@
 import logging
 
-import anydi
 from django.http import HttpRequest
-from ninja import Router, Query
-from ninja.errors import HttpError
 
-from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
-    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse, GetBreedByOidSchemaResponse, UpdateBreedSchemaResponse
+import anydi
+from dogs.application.api.v1.breeds.schemas import (
+    CreateBreedSchemaRequest,
+    CreateBreedSchemaResponse,
+    GetAllBreedsSchemaResponse,
+    GetBreedByOidSchemaResponse,
+    UpdateBreedSchemaRequest,
+    UpdateBreedSchemaResponse,
+)
 from dogs.exceptions.base import ApplicationException
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
-from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
-    GetAllBreedsWithCountOfDogsForEachBreedCommand, GetBreedByOid, UpdateBreedCommand
-from dogs.logic.use_cases.breeds import CreateBreedUseCase, DeleteBreedUseCase, \
-    GetAllBreedsWithCountOfDogsForEachBreedUseCase, GetBreedByOidUseCase, UpdateBreedUseCase
+from dogs.logic.commands.breeds import (
+    CreateBreedCommand,
+    DeleteBreedCommand,
+    GetAllBreedsWithCountOfDogsForEachBreedCommand,
+    GetBreedByOid,
+    UpdateBreedCommand,
+)
+from dogs.logic.use_cases.breeds import (
+    CreateBreedUseCase,
+    DeleteBreedUseCase,
+    GetAllBreedsWithCountOfDogsForEachBreedUseCase,
+    GetBreedByOidUseCase,
+    UpdateBreedUseCase,
+)
+from ninja import (
+    Query,
+    Router,
+)
+from ninja.errors import HttpError
+
 
 router = Router(tags=['breeds'])
 logger = logging.getLogger(__name__)

@@ -1,4 +1,8 @@
-from typing import List, Optional, override
+from typing import (
+    List,
+    Optional,
+    override,
+)
 
 from django.db.models import Count
 

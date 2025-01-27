@@ -12,6 +12,7 @@ from typing import (
 from dogs.domain.entities.base import BaseEntity
 from dogs.infrastructure.adapters.django_orm.base import BaseAdapter
 
+
 BaseEntityType = TypeVar("BaseEntityType", bound=BaseEntity)
 BaseAdapterType = TypeVar("BaseAdapterType", bound=BaseAdapter)
 

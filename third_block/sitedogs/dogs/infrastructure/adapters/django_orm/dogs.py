@@ -2,11 +2,26 @@ from typing import override
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.domain.entities.dogs import DogEntity
-from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
-from dogs.domain.values.dog import Age, Gender, FavouriteFood, FavouriteToy, Color
+from dogs.domain.values.breed import (
+    ExerciseNeeds,
+    Friendliness,
+    SheddingAmount,
+    Size,
+    TrainAbility,
+)
+from dogs.domain.values.dog import (
+    Age,
+    Color,
+    FavouriteFood,
+    FavouriteToy,
+    Gender,
+)
 from dogs.domain.values.shared import Name
 from dogs.infrastructure.adapters.django_orm.base import BaseAdapter
-from dogs.infrastructure.adapters.django_orm.orm import Dog, Breed
+from dogs.infrastructure.adapters.django_orm.orm import (
+    Breed,
+    Dog,
+)
 
 
 class DogsAdapter(BaseAdapter[Dog, DogEntity]):

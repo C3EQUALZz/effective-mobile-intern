@@ -1,7 +1,7 @@
-from ninja import NinjaAPI
-
 from dogs.application.api.v1.breeds.api import router as breeds_router
 from dogs.application.api.v1.dogs.api import router as dogs_router
+from ninja import NinjaAPI
+
 
 api = NinjaAPI(
     title="API for Dogs",

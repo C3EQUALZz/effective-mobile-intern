@@ -1,9 +1,16 @@
-from abc import ABC, abstractmethod
+from abc import (
+    ABC,
+    abstractmethod,
+)
+from typing import (
+    Generic,
+    TypeVar,
+)
 
 from django.db.models.base import Model
 
 from dogs.domain.entities.base import BaseEntity
-from typing import TypeVar, Generic
+
 
 ModelType = TypeVar('ModelType', bound=Model)
 EntityType = TypeVar('EntityType', bound=BaseEntity)

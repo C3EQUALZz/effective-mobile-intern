@@ -1,4 +1,8 @@
-from typing import List, Optional, overload
+from typing import (
+    List,
+    Optional,
+    overload,
+)
 
 from dogs.domain.entities.dogs import DogEntity
 from dogs.exceptions.infrastructure import DogNotFoundException

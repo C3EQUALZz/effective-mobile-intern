@@ -1,7 +1,13 @@
 from typing import override
 
 from dogs.domain.entities.breed import BreedEntity
-from dogs.domain.values.breed import Size, Friendliness, TrainAbility, SheddingAmount, ExerciseNeeds
+from dogs.domain.values.breed import (
+    ExerciseNeeds,
+    Friendliness,
+    SheddingAmount,
+    Size,
+    TrainAbility,
+)
 from dogs.domain.values.shared import Name
 from dogs.infrastructure.adapters.django_orm.base import BaseAdapter
 from dogs.infrastructure.adapters.django_orm.orm import Breed

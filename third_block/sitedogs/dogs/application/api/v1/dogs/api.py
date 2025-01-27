@@ -1,18 +1,36 @@
 import logging
 
-import anydi
 from django.http import HttpRequest
-from ninja import Router, Query
-from ninja.errors import HttpError
 
-from dogs.application.api.v1.dogs.schemas import CreateDogSchemaRequest, CreateDogSchemaResponse, \
-    GetAllDogsWithAverageAgeForEachBreedSchemeResponse, GetDogByOidSchemaResponse, UpdateDogSchemaResponse, \
-    UpdateDogSchemaRequest
+import anydi
+from dogs.application.api.v1.dogs.schemas import (
+    CreateDogSchemaRequest,
+    CreateDogSchemaResponse,
+    GetAllDogsWithAverageAgeForEachBreedSchemeResponse,
+    GetDogByOidSchemaResponse,
+    UpdateDogSchemaRequest,
+    UpdateDogSchemaResponse,
+)
 from dogs.exceptions.base import ApplicationException
 from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
-from dogs.logic.commands.dogs import CreateDogCommand, UpdateDogCommand, DeleteDogCommand
-from dogs.logic.use_cases.dogs import CreateDogUseCase, GetDogByOidWithNumberOfSameBreedUseCase, \
-    GetAllDogsWithAverageAgeForEachBreedUseCase, DeleteDogUseCase, UpdateDogUseCase
+from dogs.logic.commands.dogs import (
+    CreateDogCommand,
+    DeleteDogCommand,
+    UpdateDogCommand,
+)
+from dogs.logic.use_cases.dogs import (
+    CreateDogUseCase,
+    DeleteDogUseCase,
+    GetAllDogsWithAverageAgeForEachBreedUseCase,
+    GetDogByOidWithNumberOfSameBreedUseCase,
+    UpdateDogUseCase,
+)
+from ninja import (
+    Query,
+    Router,
+)
+from ninja.errors import HttpError
+
 
 router = Router(tags=['dogs'])
 logger = logging.getLogger(__name__)

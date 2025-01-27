@@ -1,13 +1,23 @@
 from dogs.domain.entities.breed import BreedEntity
 from dogs.domain.entities.dogs import DogEntity
-from dogs.domain.values.dog import Gender, Color, FavouriteFood, FavouriteToy, Age
+from dogs.domain.values.dog import (
+    Age,
+    Color,
+    FavouriteFood,
+    FavouriteToy,
+    Gender,
+)
 from dogs.domain.values.shared import Name
 from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
 from dogs.infrastructure.repositories.breeds.base import BreedsRepository
 from dogs.infrastructure.repositories.dogs.base import DogsRepository
 from dogs.infrastructure.services.breeds import BreedsService
 from dogs.infrastructure.services.dogs import DogsService
-from dogs.logic.commands.dogs import CreateDogCommand, UpdateDogCommand, DeleteDogCommand
+from dogs.logic.commands.dogs import (
+    CreateDogCommand,
+    DeleteDogCommand,
+    UpdateDogCommand,
+)
 
 
 class CreateDogUseCase:

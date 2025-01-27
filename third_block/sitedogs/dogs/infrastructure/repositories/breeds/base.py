@@ -1,5 +1,11 @@
-from abc import ABC, abstractmethod
-from typing import Optional, List
+from abc import (
+    ABC,
+    abstractmethod,
+)
+from typing import (
+    List,
+    Optional,
+)
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.infrastructure.adapters.django_orm.breeds import BreedsAdapter
