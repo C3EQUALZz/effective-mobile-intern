@@ -1,7 +1,7 @@
 import logging
 
 from django.http import HttpRequest
-
+from uuid import UUID
 import anydi
 from dogs.application.api.v1.breeds.schemas import (
     CreateBreedSchemaRequest,
@@ -45,6 +45,17 @@ def get_all_breeds(
     page_size: int = Query(default=10, required=False, ge=1),
     use_case: GetAllBreedsWithCountOfDogsForEachBreedUseCase = anydi.auto,
 ):
+    """
+    Handler for getting all breeds with count of dogs for each breed
+
+    Args:
+        request (HttpRequest): HTTP request (needs for Django Ninja)
+        page_number (int): Page number for pagination
+        page_size (int): Page size for pagination
+        use_case: Case that will perform operations
+    Returns:
+        list with all breeds with count of dogs for each breed
+    """
     try:
         command: GetAllBreedsWithCountOfDogsForEachBreedCommand = GetAllBreedsWithCountOfDogsForEachBreedCommand(
             page_number, page_size
@@ -64,6 +75,17 @@ def create_breed(
     scheme: CreateBreedSchemaRequest,
     use_case: CreateBreedUseCase = anydi.auto,
 ):
+    """
+    Handler for creating a new breed.
+
+    Args:
+        request (HttpRequest): HTTP request (needs for Django Ninja).
+        scheme (CreateBreedSchemaRequest): scheme that we need for creating new breed.
+        use_case (CreateBreedUseCase): use case for creating new breed.
+
+    Returns:
+        A new breed which consists oid, name, size, friendliness, train_ability, shedding_amount, exercise_needs
+    """
     try:
         return CreateBreedSchemaResponse.from_entity(use_case.execute(CreateBreedCommand(**scheme.model_dump())))
     except ApplicationException as e:
@@ -74,11 +96,25 @@ def create_breed(
 @router.get("/{breed_id}", summary="Get a specific breed by his oid", response=GetBreedByOidSchemaResponse)
 def get_breed(
     request: HttpRequest,  # noqa
-    breed_id: str,
+    breed_id: UUID,
     use_case: GetBreedByOidUseCase = anydi.auto,
 ):
+    """
+    Handler for getting a specific breed by his oid.
+
+    Args:
+        request (HttpRequest): HTTP request (needs for Django Ninja).
+        breed_id (UUID): id of breed
+        use_case: UseCase that will perform operations
+
+    Returns:
+        A existing breed if oid actual.
+
+    Raises:
+        BreedDoesNotExistException if breed with breed_oid does not exist.
+    """
     try:
-        return GetBreedByOidSchemaResponse.from_entity(use_case.execute(GetBreedByOid(breed_id)))
+        return GetBreedByOidSchemaResponse.from_entity(use_case.execute(GetBreedByOid(str(breed_id))))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
@@ -90,6 +126,20 @@ def update_breed(
     scheme: UpdateBreedSchemaRequest,
     use_case: UpdateBreedUseCase = anydi.auto,
 ):
+    """
+    Handler for updating a specific breed by his oid.
+
+    Args:
+        request (HttpRequest): HTTP request (needs for Django Ninja).
+        scheme (UpdateBreedSchemaRequest): Scheme that we need for updating new breed. Check attrs in it.
+        use_case: UseCase that will perform operations
+
+    Returns:
+        Breed that was updated in other case raises BreedDoesNotExistException.
+
+    Raises:
+        BreedDoesNotExistException if breed with breed_oid does not exist.
+    """
     try:
         return UpdateBreedSchemaResponse.from_entity(use_case.execute(UpdateBreedCommand(**scheme.model_dump())))
     except ApplicationException as e:
@@ -100,11 +150,22 @@ def update_breed(
 @router.delete("/{breed_id}", summary="Delete a specific breed by his oid", response=None)
 def delete_breed(
     request: HttpRequest,  # noqa
-    breed_id: str,
+    breed_id: UUID,
     use_case: DeleteBreedUseCase = anydi.auto,
 ):
+    """
+    Handler for deleting a specific breed by his oid.
+
+    Args:
+        request (HttpRequest): HTTP request (needs for Django Ninja).
+        breed_id (UUID): id of breed
+        use_case: UseCase that will perform operations
+
+    Returns:
+        None if it was deleted.
+    """
     try:
-        return use_case.execute(DeleteBreedCommand(breed_id))
+        return use_case.execute(DeleteBreedCommand(str(breed_id)))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)

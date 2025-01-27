@@ -62,9 +62,10 @@ sections=[
 ]
 
 [tool.mypy]
-files = ["app", "tests"]
+files = ["sitedogs"]
+mypy_path = "./sitedogs"
 python_version = "3.12"
-plugins = ['pydantic.mypy']
+plugins = ['pydantic.mypy', 'mypy_django_plugin.main']
 strict = true
 pretty = true
 
@@ -86,6 +87,10 @@ disallow_incomplete_defs = true
 disallow_any_unimported = false
 disable_error_code = ['empty-body', 'method-assign']
 exclude = ['alembic/', 'sitedogs/dogs/migrations/']
+
+[tool.django-stubs]
+django_settings_module = "sitedogs.settings"
+ignore_missing_model_attributes = true
 
 [tool.ruff]
 line-length = 119
