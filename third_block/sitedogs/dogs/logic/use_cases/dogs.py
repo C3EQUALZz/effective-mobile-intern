@@ -43,9 +43,9 @@ class CreateDogUseCase:
 
 class UpdateDogUseCase:
     def __init__(
-            self,
-            dog_repository: DogsRepository,
-            breed_repository: BreedsRepository,
+        self,
+        dog_repository: DogsRepository,
+        breed_repository: BreedsRepository,
     ) -> None:
         self._dog_service = DogsService(dog_repository)
         self._breed_service = BreedsService(breed_repository)

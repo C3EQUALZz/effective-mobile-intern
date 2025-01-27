@@ -31,7 +31,7 @@ class DjangoORMBreedsRepository(BreedsRepository):
 
     @override
     def list(self, start: int = 0, limit: int = 10) -> List[BreedEntity]:
-        return [self._adapter.to_entity(breed) for breed in Breed.objects.all()[start:start + limit]]
+        return [self._adapter.to_entity(breed) for breed in Breed.objects.all()[start : start + limit]]
 
     @override
     def delete(self, oid: str) -> None:
@@ -39,15 +39,12 @@ class DjangoORMBreedsRepository(BreedsRepository):
 
     @override
     def list_with_count_for_each_breed(self, start: int = 0, limit: int = 10) -> List[BreedWithCountOfDogs]:
-        breeds_with_counts = (
-            Breed.objects.annotate(dog_count=Count('dogs'))
-            [start:start + limit]
-        )
+        breeds_with_counts = Breed.objects.annotate(dog_count=Count("dogs"))[start : start + limit]
 
         return [
             BreedWithCountOfDogs(
                 breed=self._adapter.to_entity(breed),
-                count=breed.dog_count  # type: ignore
+                count=breed.dog_count,  # type: ignore
             )
             for breed in breeds_with_counts
         ]

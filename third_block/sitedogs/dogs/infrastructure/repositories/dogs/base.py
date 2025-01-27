@@ -43,8 +43,6 @@ class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
 
     @abstractmethod
     def list_dogs_with_average_age_for_each_breed(
-            self,
-            start: int = 0,
-            limit: int = 10
+        self, start: int = 0, limit: int = 10
     ) -> List[DogsWithAverageAgeForEachBreed]:
         raise NotImplementedError

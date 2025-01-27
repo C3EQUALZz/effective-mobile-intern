@@ -4,9 +4,7 @@ from django.db import models
 
 
 class Breed(models.Model):
-    SIZE_CHOICES: Final[list[tuple[str, str]]] = [
-        (size, size) for size in ['Tiny', 'Small', 'Medium', 'Large']
-    ]
+    SIZE_CHOICES: Final[list[tuple[str, str]]] = [(size, size) for size in ["Tiny", "Small", "Medium", "Large"]]
 
     oid = models.UUIDField(primary_key=True, editable=False)
     name = models.CharField(max_length=255, unique=True)
@@ -21,14 +19,12 @@ class Breed(models.Model):
 
 
 class Dog(models.Model):
-    GENDER_CHOICES: Final[list[tuple[str, str]]] = [
-        (size, size) for size in ['Male', 'Female']
-    ]
+    GENDER_CHOICES: Final[list[tuple[str, str]]] = [(size, size) for size in ["Male", "Female"]]
 
     oid = models.UUIDField(primary_key=True, editable=False)
     name = models.CharField(max_length=255)
     age = models.PositiveIntegerField()
-    breed = models.ForeignKey(Breed, on_delete=models.CASCADE, related_name='dogs')
+    breed = models.ForeignKey(Breed, on_delete=models.CASCADE, related_name="dogs")
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     color = models.CharField(max_length=50)
     favorite_food = models.CharField(max_length=255, blank=True, null=True)

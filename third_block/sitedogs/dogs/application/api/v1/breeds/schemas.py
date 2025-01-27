@@ -36,16 +36,13 @@ class BaseBreedSchemaResponse(Schema):
         )
 
 
-class CreateBreedSchemaResponse(BaseBreedSchemaResponse):
-    ...
+class CreateBreedSchemaResponse(BaseBreedSchemaResponse): ...
 
 
-class GetBreedByOidSchemaResponse(BaseBreedSchemaResponse):
-    ...
+class GetBreedByOidSchemaResponse(BaseBreedSchemaResponse): ...
 
 
-class UpdateBreedSchemaResponse(BaseBreedSchemaResponse):
-    ...
+class UpdateBreedSchemaResponse(BaseBreedSchemaResponse): ...
 
 
 class GetAllBreedsSchemaResponse(Schema):

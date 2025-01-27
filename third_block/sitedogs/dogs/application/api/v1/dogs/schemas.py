@@ -57,16 +57,13 @@ class UpdateDogSchemaRequest(Schema):
     favourite_toy: constr(min_length=1)
 
 
-class CreateDogSchemaResponse(BaseDogSchema):
-    ...
+class CreateDogSchemaResponse(BaseDogSchema): ...
 
 
-class GetDogByOidSchemaResponse(BaseDogSchema):
-    ...
+class GetDogByOidSchemaResponse(BaseDogSchema): ...
 
 
-class UpdateDogSchemaResponse(BaseDogSchema):
-    ...
+class UpdateDogSchemaResponse(BaseDogSchema): ...
 
 
 class GetAllDogsWithAverageAgeForEachBreedSchemeResponse(Schema):

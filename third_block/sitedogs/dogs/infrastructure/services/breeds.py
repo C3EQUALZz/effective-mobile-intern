@@ -30,11 +30,8 @@ class BreedsService:
         return self._repository.update(existing_breed.oid, breed)
 
     def list_all_breeds_with_count_of_dogs_for_each_breed(
-            self,
-            page_number: int,
-            page_size: int
+        self, page_number: int, page_size: int
     ) -> list[BreedWithCountOfDogs]:
-
         start: int = (page_number - 1) * page_size
         limit: int = start + page_size
 

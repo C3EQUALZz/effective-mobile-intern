@@ -40,15 +40,13 @@ class DogsModule(anydi.Module):
 
     @anydi.provider(scope="singleton")
     def dogs_get_all_dogs_with_average_year_use_case(
-            self,
-            repo: DogsRepository
+        self, repo: DogsRepository
     ) -> GetAllDogsWithAverageAgeForEachBreedUseCase:
         return GetAllDogsWithAverageAgeForEachBreedUseCase(repo)
 
     @anydi.provider(scope="singleton")
     def dogs_get_dog_by_oid_with_number_of_same_breed_use_case(
-            self,
-            repo: DogsRepository
+        self, repo: DogsRepository
     ) -> GetDogByOidWithNumberOfSameBreedUseCase:
         return GetDogByOidWithNumberOfSameBreedUseCase(repo)
 
@@ -76,7 +74,6 @@ class BreedsModule(anydi.Module):
 
     @anydi.provider(scope="singleton")
     def breed_get_all_breeds_with_count_of_dogs_use_case(
-            self,
-            repo: BreedsRepository
+        self, repo: BreedsRepository
     ) -> GetAllBreedsWithCountOfDogsForEachBreedUseCase:
         return GetAllBreedsWithCountOfDogsForEachBreedUseCase(repo)

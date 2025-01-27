@@ -52,7 +52,7 @@ class DjangoORMDogsRepository(DogsRepository):
             breed=new_dog.breed,
             color=new_dog.color,
             favorite_food=new_dog.favorite_food,
-            favorite_toy=new_dog.favorite_toy
+            favorite_toy=new_dog.favorite_toy,
         )
 
         return self.get(oid)
@@ -63,18 +63,15 @@ class DjangoORMDogsRepository(DogsRepository):
 
     @override
     def list_dogs_with_average_age_for_each_breed(
-            self,
-            start: int = 0,
-            limit: int = 10
+        self, start: int = 0, limit: int = 10
     ) -> List[DogsWithAverageAgeForEachBreed]:
         # Получаем породы с их средним возрастом
         breeds_with_avg_age = Breed.objects.annotate(
             avg_age=Subquery(
-                Dog.objects.filter(
-                    breed=OuterRef('pk')
-                ).values('breed').annotate(
-                    avg_age=Avg('age')
-                ).values('avg_age')[:1]
+                Dog.objects.filter(breed=OuterRef("pk"))
+                .values("breed")
+                .annotate(avg_age=Avg("age"))
+                .values("avg_age")[:1]
             )
         )[start:limit]
 
@@ -82,7 +79,7 @@ class DjangoORMDogsRepository(DogsRepository):
             DogsWithAverageAgeForEachBreed(
                 breed_name=breed.name,
                 average_age=breed.avg_age or 0.0,  # type: ignore
-                dogs=[self._adapter.to_entity(dog) for dog in breed.dogs.all()]
+                dogs=[self._adapter.to_entity(dog) for dog in breed.dogs.all()],
             )
             for breed in breeds_with_avg_age
         ]

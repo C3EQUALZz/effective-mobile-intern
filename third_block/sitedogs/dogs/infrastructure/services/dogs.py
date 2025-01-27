@@ -34,7 +34,6 @@ class DogsService:
         return self._repository.update(oid=existing_dog.oid, model=dog)
 
     def delete(self, dog_oid: str) -> None:
-
         existing_dog: Optional[DogEntity] = self._repository.get(oid=dog_oid)
 
         if existing_dog is None:
@@ -43,9 +42,7 @@ class DogsService:
         return self._repository.delete(dog_oid)
 
     def list_all_dogs_with_average_year(
-            self,
-            page_number: int = 0,
-            page_size: int = 10
+        self, page_number: int = 0, page_size: int = 10
     ) -> List[DogsWithAverageAgeForEachBreed]:
         start: int = (page_number - 1) * page_size
         limit: int = start + page_size
@@ -53,12 +50,10 @@ class DogsService:
         return self._repository.list_dogs_with_average_age_for_each_breed(start=start, limit=limit)
 
     @overload
-    def check_existence(self, dog_id: str) -> bool:
-        ...
+    def check_existence(self, dog_id: str) -> bool: ...
 
     @overload
-    def check_existence(self, name: str, age: int, gender: str) -> bool:
-        ...
+    def check_existence(self, name: str, age: int, gender: str) -> bool: ...
 
     def check_existence(self, *args) -> bool:
         match len(args):

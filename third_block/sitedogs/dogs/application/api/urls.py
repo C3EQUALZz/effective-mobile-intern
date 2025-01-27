@@ -4,5 +4,5 @@ from dogs.application.api.v1.api import api
 
 
 urlpatterns = [
-    path('v1/', api.urls),
+    path("v1/", api.urls),
 ]

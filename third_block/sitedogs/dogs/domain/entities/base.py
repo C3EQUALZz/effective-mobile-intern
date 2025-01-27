@@ -37,10 +37,10 @@ class BaseEntity(ABC):
                     raise CastException(f"'{field_name}' with value '{value}' to {field_type}")
 
     def to_dict(
-            self,
-            convert_value_object_to_python_object: bool = True,
-            exclude: Optional[Set[str]] = None,
-            include: Optional[Dict[str, Any]] = None
+        self,
+        convert_value_object_to_python_object: bool = True,
+        exclude: Optional[Set[str]] = None,
+        include: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Create a dictionary representation of the entity.

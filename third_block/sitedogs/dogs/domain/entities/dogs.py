@@ -25,6 +25,7 @@ class DogEntity(BaseEntity):
     - favourite_food: Favourite food of the dog. Must be a string that has only letters.
     - favorite_toy: Favorite toy of the dog. Must be a string that has only letters.
     """
+
     name: Name
     age: Age
     breed: BreedEntity

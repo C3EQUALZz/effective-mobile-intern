@@ -85,7 +85,7 @@ allow_untyped_decorators = true
 disallow_incomplete_defs = true
 disallow_any_unimported = false
 disable_error_code = ['empty-body', 'method-assign']
-exclude = ['alembic/']
+exclude = ['alembic/', 'sitedogs/dogs/migrations/']
 
 [tool.ruff]
 line-length = 119
