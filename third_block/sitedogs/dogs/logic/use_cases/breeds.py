@@ -38,7 +38,17 @@ class UpdateBreedUseCase:
         self._service = BreedsService(repository)
 
     def execute(self, command: UpdateBreedCommand) -> BreedEntity:
-        ...
+        breed_entity = BreedEntity(
+            oid=command.breed_oid,
+            name=Name(command.name),
+            size=Size(command.size),
+            friendliness=Friendliness(command.friendliness),
+            train_ability=TrainAbility(command.train_ability),
+            shedding_amount=SheddingAmount(command.shedding_amount),
+            exercise_needs=ExerciseNeeds(command.exercise_needs),
+        )
+
+        return self._service.update(breed_entity)
 
 
 class GetAllBreedsWithCountOfDogsForEachBreedUseCase:

@@ -38,6 +38,10 @@ class GetBreedByOidSchemaResponse(BaseBreedSchemaResponse):
     ...
 
 
+class UpdateBreedSchemaResponse(BaseBreedSchemaResponse):
+    ...
+
+
 class GetAllBreedsSchemaResponse(Schema):
     count: conint(ge=0)
     breed: BaseBreedSchemaResponse

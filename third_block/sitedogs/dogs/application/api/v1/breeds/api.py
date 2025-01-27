@@ -6,7 +6,7 @@ from ninja import Router, Query
 from ninja.errors import HttpError
 
 from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
-    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse, GetBreedByOidSchemaResponse
+    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse, GetBreedByOidSchemaResponse, UpdateBreedSchemaResponse
 from dogs.exceptions.base import ApplicationException
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
@@ -80,6 +80,7 @@ def get_breed(
 @router.put(
     '/{breed_id}',
     summary="Update a specific breed by his oid",
+    response=UpdateBreedSchemaResponse
 )
 def update_breed(
         request: HttpRequest, # noqa
@@ -87,13 +88,17 @@ def update_breed(
         use_case: UpdateBreedUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(UpdateBreedCommand(**scheme.model_dump()))
+        return UpdateBreedSchemaResponse.from_entity(use_case.execute(UpdateBreedCommand(**scheme.model_dump())))
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
 
 
-@router.delete('/{breed_id}')
+@router.delete(
+    '/{breed_id}',
+    summary="Delete a specific breed by his oid",
+    response=None
+)
 def delete_breed(
         request: HttpRequest,  # noqa
         breed_id: str,
