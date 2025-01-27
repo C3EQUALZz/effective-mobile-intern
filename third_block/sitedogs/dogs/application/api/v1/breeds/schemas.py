@@ -5,6 +5,7 @@ from ninja import Schema
 from pydantic import constr, conint
 
 from dogs.domain.entities.breed import BreedEntity
+from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 
 
 class CreateBreedSchemaRequest(Schema):
@@ -14,6 +15,7 @@ class CreateBreedSchemaRequest(Schema):
     train_ability: conint(ge=1, le=5)
     shedding_amount: conint(ge=1, le=5)
     exercise_needs: conint(ge=1, le=5)
+
 
 class CreateBreedSchemaResponse(Schema):
     oid: UUID
@@ -35,6 +37,23 @@ class CreateBreedSchemaResponse(Schema):
             shedding_amount=entity.shedding_amount.as_generic_type(),
             exercise_needs=entity.exercise_needs.as_generic_type(),
         )
+
+
+class GetBreedSchemaResponse(Schema):
+    ...
+
+
+class GetAllBreedsSchemaResponse(Schema):
+    count: conint(ge=0)
+    breed: CreateBreedSchemaResponse
+
+    @classmethod
+    def from_entity(cls, entity: BreedWithCountOfDogs) -> Self:
+        return cls(
+            count=entity.count,
+            breed=CreateBreedSchemaResponse.from_entity(entity.breed),
+        )
+
 
 class UpdateBreedSchemaRequest(Schema):
     breed_oid: UUID

@@ -6,8 +6,9 @@ from ninja import Router, Query
 from ninja.errors import HttpError
 
 from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaRequest, UpdateBreedSchemaRequest, \
-    CreateBreedSchemaResponse
+    CreateBreedSchemaResponse, GetAllBreedsSchemaResponse
 from dogs.exceptions.base import ApplicationException
+from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.logic.commands.breeds import CreateBreedCommand, DeleteBreedCommand, \
     GetAllBreedsWithCountOfDogsForEachBreedCommand, GetBreedByOid, UpdateBreedCommand
 from dogs.logic.use_cases.breeds import CreateBreedUseCase, DeleteBreedUseCase, \
@@ -17,7 +18,11 @@ router = Router(tags=['breeds'])
 logger = logging.getLogger(__name__)
 
 
-@router.get('/')
+@router.get(
+    '/',
+    summary="get all breeds with count of dogs for each breed",
+    response=list[GetAllBreedsSchemaResponse]
+)
 def get_all_breeds(
         request: HttpRequest,  # noqa
         page_number: int = Query(default=1, required=False, ge=1),
@@ -25,7 +30,14 @@ def get_all_breeds(
         use_case: GetAllBreedsWithCountOfDogsForEachBreedUseCase = anydi.auto
 ):
     try:
-        return use_case.execute(GetAllBreedsWithCountOfDogsForEachBreedCommand(page_number, page_size))
+        command: GetAllBreedsWithCountOfDogsForEachBreedCommand = GetAllBreedsWithCountOfDogsForEachBreedCommand(
+            page_number,
+            page_size
+        )
+
+        result: list[BreedWithCountOfDogs] = use_case.execute(command=command)
+        return [GetAllBreedsSchemaResponse.from_entity(x) for x in result]
+
     except ApplicationException as e:
         logger.error(e)
         raise HttpError(e.status, e.message)
