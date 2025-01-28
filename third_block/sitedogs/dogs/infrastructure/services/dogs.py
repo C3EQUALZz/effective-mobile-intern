@@ -1,6 +1,4 @@
 from typing import (
-    List,
-    Optional,
     overload,
 )
 
@@ -15,7 +13,7 @@ class DogsService:
         self._repository = repository
 
     def get(self, dog_oid: str) -> DogEntity:
-        existing_dog: Optional[DogEntity] = self._repository.get(oid=dog_oid)
+        existing_dog: DogEntity | None = self._repository.get(oid=dog_oid)
 
         if existing_dog is None:
             raise DogNotFoundException(f"oid {dog_oid}")
@@ -26,7 +24,7 @@ class DogsService:
         return self._repository.add(dog)
 
     def update(self, dog: DogEntity) -> DogEntity:
-        existing_dog: Optional[DogEntity] = self._repository.get(oid=dog.oid)
+        existing_dog: DogEntity | None = self._repository.get(oid=dog.oid)
 
         if existing_dog is None:
             raise DogNotFoundException(f"oid {dog.oid}")
@@ -34,7 +32,7 @@ class DogsService:
         return self._repository.update(oid=existing_dog.oid, model=dog)
 
     def delete(self, dog_oid: str) -> None:
-        existing_dog: Optional[DogEntity] = self._repository.get(oid=dog_oid)
+        existing_dog: DogEntity | None = self._repository.get(oid=dog_oid)
 
         if existing_dog is None:
             raise DogNotFoundException(f"oid {dog_oid}")
@@ -43,7 +41,7 @@ class DogsService:
 
     def list_all_dogs_with_average_year(
         self, page_number: int = 0, page_size: int = 10
-    ) -> List[DogsWithAverageAgeForEachBreed]:
+    ) -> list[DogsWithAverageAgeForEachBreed]:
         start: int = (page_number - 1) * page_size
         limit: int = start + page_size
 

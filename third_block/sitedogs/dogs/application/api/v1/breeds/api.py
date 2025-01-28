@@ -1,8 +1,15 @@
 import logging
-
-from django.http import HttpRequest
 from uuid import UUID
+
 import anydi
+from core.exceptions.base import ApplicationException
+from django.http import HttpRequest
+from ninja import (
+    Query,
+    Router,
+)
+from ninja.errors import HttpError
+
 from dogs.application.api.v1.breeds.schemas import (
     CreateBreedSchemaRequest,
     CreateBreedSchemaResponse,
@@ -11,7 +18,6 @@ from dogs.application.api.v1.breeds.schemas import (
     UpdateBreedSchemaRequest,
     UpdateBreedSchemaResponse,
 )
-from dogs.exceptions.base import ApplicationException
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
 from dogs.logic.commands.breeds import (
     CreateBreedCommand,
@@ -27,12 +33,6 @@ from dogs.logic.use_cases.breeds import (
     GetBreedByOidUseCase,
     UpdateBreedUseCase,
 )
-from ninja import (
-    Query,
-    Router,
-)
-from ninja.errors import HttpError
-
 
 router = Router(tags=["breeds"])
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 @router.get("/", summary="get all breeds with count of dogs for each breed", response=list[GetAllBreedsSchemaResponse])
 def get_all_breeds(
-    request: HttpRequest,  # noqa
+    request: HttpRequest,
     page_number: int = Query(default=1, required=False, ge=1),
     page_size: int = Query(default=10, required=False, ge=1),
     use_case: GetAllBreedsWithCountOfDogsForEachBreedUseCase = anydi.auto,
@@ -71,7 +71,7 @@ def get_all_breeds(
 
 @router.post("/", summary="Create a new breed", response=CreateBreedSchemaResponse)
 def create_breed(
-    request: HttpRequest,  # noqa
+    request: HttpRequest,
     scheme: CreateBreedSchemaRequest,
     use_case: CreateBreedUseCase = anydi.auto,
 ):
@@ -95,7 +95,7 @@ def create_breed(
 
 @router.get("/{breed_id}", summary="Get a specific breed by his oid", response=GetBreedByOidSchemaResponse)
 def get_breed(
-    request: HttpRequest,  # noqa
+    request: HttpRequest,
     breed_id: UUID,
     use_case: GetBreedByOidUseCase = anydi.auto,
 ):
@@ -122,7 +122,7 @@ def get_breed(
 
 @router.put("/{breed_id}", summary="Update a specific breed by his oid", response=UpdateBreedSchemaResponse)
 def update_breed(
-    request: HttpRequest,  # noqa
+    request: HttpRequest,
     scheme: UpdateBreedSchemaRequest,
     use_case: UpdateBreedUseCase = anydi.auto,
 ):
@@ -149,7 +149,7 @@ def update_breed(
 
 @router.delete("/{breed_id}", summary="Delete a specific breed by his oid", response=None)
 def delete_breed(
-    request: HttpRequest,  # noqa
+    request: HttpRequest,
     breed_id: UUID,
     use_case: DeleteBreedUseCase = anydi.auto,
 ):

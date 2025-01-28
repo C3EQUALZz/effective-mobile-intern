@@ -6,10 +6,7 @@ from dataclasses import (
 )
 from typing import (
     Any,
-    Dict,
     get_type_hints,
-    Optional,
-    Set,
 )
 from uuid import uuid4
 
@@ -39,9 +36,9 @@ class BaseEntity(ABC):
     def to_dict(
         self,
         convert_value_object_to_python_object: bool = True,
-        exclude: Optional[Set[str]] = None,
-        include: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        exclude: set[str] | None = None,
+        include: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """
         Create a dictionary representation of the entity.
 
@@ -51,7 +48,7 @@ class BaseEntity(ABC):
         include: set of model fields, which should be included into dictionary representation.
         """
 
-        data: Dict[str, Any] = asdict(self)
+        data: dict[str, Any] = asdict(self)
 
         if convert_value_object_to_python_object:
             data = self.__process_nested(data)

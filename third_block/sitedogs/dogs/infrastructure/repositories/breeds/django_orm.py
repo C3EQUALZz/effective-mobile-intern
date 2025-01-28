@@ -1,6 +1,5 @@
+import builtins
 from typing import (
-    List,
-    Optional,
     override,
 )
 
@@ -20,8 +19,8 @@ class DjangoORMBreedsRepository(BreedsRepository):
         return model
 
     @override
-    def get(self, oid: str) -> Optional[BreedEntity]:
-        breed: Optional[Breed] = Breed.objects.get(oid=oid)
+    def get(self, oid: str) -> BreedEntity | None:
+        breed: Breed | None = Breed.objects.get(oid=oid)
         return None if breed is None else self._adapter.to_entity(breed)
 
     @override
@@ -30,7 +29,7 @@ class DjangoORMBreedsRepository(BreedsRepository):
         return self._adapter.to_entity(Breed.objects.get(oid=oid))
 
     @override
-    def list(self, start: int = 0, limit: int = 10) -> List[BreedEntity]:
+    def list(self, start: int = 0, limit: int = 10) -> list[BreedEntity]:
         return [self._adapter.to_entity(breed) for breed in Breed.objects.all()[start : start + limit]]
 
     @override
@@ -38,7 +37,7 @@ class DjangoORMBreedsRepository(BreedsRepository):
         Breed.objects.get(oid=oid).delete()
 
     @override
-    def list_with_count_for_each_breed(self, start: int = 0, limit: int = 10) -> List[BreedWithCountOfDogs]:
+    def list_with_count_for_each_breed(self, start: int = 0, limit: int = 10) -> builtins.list[BreedWithCountOfDogs]:
         breeds_with_counts = Breed.objects.annotate(dog_count=Count("dogs"))[start : start + limit]
 
         return [

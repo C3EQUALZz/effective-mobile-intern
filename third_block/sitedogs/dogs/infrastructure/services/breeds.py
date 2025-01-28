@@ -1,4 +1,3 @@
-from typing import Optional
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.exceptions.infrastructure import BreedNotFoundException
@@ -14,7 +13,7 @@ class BreedsService:
         return self._repository.add(breed)
 
     def get(self, breed_oid: str) -> BreedEntity:
-        breed: Optional[BreedEntity] = self._repository.get(breed_oid)
+        breed: BreedEntity | None = self._repository.get(breed_oid)
 
         if breed is None:
             raise BreedNotFoundException(f"oid {breed_oid}")
@@ -22,7 +21,7 @@ class BreedsService:
         return breed
 
     def update(self, breed: BreedEntity) -> BreedEntity:
-        existing_breed: Optional[BreedEntity] = self._repository.get(breed.oid)
+        existing_breed: BreedEntity | None = self._repository.get(breed.oid)
 
         if existing_breed is None:
             raise BreedNotFoundException(f"oid {breed.oid}")
@@ -38,7 +37,7 @@ class BreedsService:
         return self._repository.list_with_count_for_each_breed(start, limit)
 
     def delete(self, breed_oid: str) -> None:
-        breed: Optional[BreedEntity] = self._repository.get(breed_oid)
+        breed: BreedEntity | None = self._repository.get(breed_oid)
 
         if breed is None:
             raise BreedNotFoundException(f"oid {breed_oid}")

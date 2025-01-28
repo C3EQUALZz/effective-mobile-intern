@@ -2,7 +2,7 @@ from abc import ABC
 from dataclasses import dataclass
 from http import HTTPStatus
 
-from dogs.exceptions.base import ApplicationException
+from core.exceptions.base import ApplicationException
 
 
 @dataclass(eq=False)

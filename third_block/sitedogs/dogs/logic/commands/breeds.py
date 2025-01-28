@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from dogs.logic.commands.base import AbstractCommand
+from core.logic.commands.base import AbstractCommand
 
 
 @dataclass(frozen=True)

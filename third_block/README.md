@@ -162,7 +162,7 @@
 - [`values`](https://blog.jannikwempe.com/domain-driven-design-entities-value-objects) - здесь находятся, так называемые, `value objects`. Грубо говоря, это характеристики нашего домена, т.е поля (атрибуты) `domain`. Почему делается так? Все очень просто: для валидации данных. Пример `value objects` для собаки [здесь](sitedogs/dogs/domain/values/dog.py)
 
 > [!NOTE]
-> Если Вы хотите добавить новый `domain`, то создайте `Python` файл, который описывает его. Например, `peoples.py`. Ваш класс должен наследоваться от [`BaseEntity`](sitedogs/dogs/domain/entities/base.py). Пример прилагаю ниже: 
+> Если Вы хотите добавить новый `domain`, то создайте `Python` файл, который описывает его. Например, `peoples.py`. Ваш класс должен наследоваться от [`BaseEntity`](sitedogs/core/domain/entities/base.py). Пример прилагаю ниже: 
 
 ```python
 @dataclass(eq=False)
@@ -176,7 +176,7 @@ class Human:
 ```
 
 > [!NOTE]
-> Если Вы хотите добавить новый `value object`, то создайте `Python` файл, который описывает его. Например, `surname.py`. Ваш класс должен наследоваться от [`BaseValueObject`](sitedogs/dogs/domain/values/base.py). Пример прилагаю ниже:
+> Если Вы хотите добавить новый `value object`, то создайте `Python` файл, который описывает его. Например, `surname.py`. Ваш класс должен наследоваться от [`BaseValueObject`](sitedogs/core/domain/values/base.py). Пример прилагаю ниже:
 
 ```python
 @dataclass(frozen=True)

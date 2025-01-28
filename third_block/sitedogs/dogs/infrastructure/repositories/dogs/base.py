@@ -1,17 +1,17 @@
+import builtins
 from abc import (
     ABC,
     abstractmethod,
 )
 from typing import (
-    List,
     Literal,
-    Optional,
 )
+
+from core.infrastructure.repositories.base import AbstractRepository
 
 from dogs.domain.entities.dogs import DogEntity
 from dogs.infrastructure.adapters.django_orm.dogs import DogsAdapter
 from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
-from dogs.infrastructure.repositories.base import AbstractRepository
 
 
 class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
@@ -22,7 +22,7 @@ class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
     """
 
     @abstractmethod
-    def get_by_name_age_gender(self, name: str, age: int, gender: Literal["Male", "Female"]) -> List[DogEntity]:
+    def get_by_name_age_gender(self, name: str, age: int, gender: Literal["Male", "Female"]) -> list[DogEntity]:
         raise NotImplementedError
 
     @abstractmethod
@@ -30,7 +30,7 @@ class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, oid: str) -> Optional[DogEntity]:
+    def get(self, oid: str) -> DogEntity | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -38,11 +38,11 @@ class DogsRepository(AbstractRepository[DogEntity, DogsAdapter], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self, start: int = 0, limit: int = 10) -> List[DogEntity]:
+    def list(self, start: int = 0, limit: int = 10) -> list[DogEntity]:
         raise NotImplementedError
 
     @abstractmethod
     def list_dogs_with_average_age_for_each_breed(
         self, start: int = 0, limit: int = 10
-    ) -> List[DogsWithAverageAgeForEachBreed]:
+    ) -> builtins.list[DogsWithAverageAgeForEachBreed]:
         raise NotImplementedError

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import override
 
-from dogs.domain.values.base import BaseValueObject
+from core.domain.values.base import BaseValueObject
+
 from dogs.exceptions.domain import (
     BadSizeException,
     BadValueBreedException,

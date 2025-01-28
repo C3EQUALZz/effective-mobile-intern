@@ -4,14 +4,15 @@ from typing import (
 )
 from uuid import UUID
 
+from ninja import Schema
+from pydantic import (
+    PositiveInt,
+    constr,
+)
+
 from dogs.application.api.v1.breeds.schemas import CreateBreedSchemaResponse
 from dogs.domain.entities.dogs import DogEntity
 from dogs.infrastructure.adapters.dto.dogs import DogsWithAverageAgeForEachBreed
-from ninja import Schema
-from pydantic import (
-    constr,
-    PositiveInt,
-)
 
 
 class BaseDogSchema(Schema):

@@ -1,7 +1,6 @@
+import builtins
 from typing import (
-    List,
     Literal,
-    Optional,
     override,
 )
 
@@ -22,7 +21,7 @@ from dogs.infrastructure.repositories.dogs.base import DogsRepository
 
 class DjangoORMDogsRepository(DogsRepository):
     @override
-    def get_by_name_age_gender(self, name: str, age: int, gender: Literal["Male", "Female"]) -> List[DogEntity]:
+    def get_by_name_age_gender(self, name: str, age: int, gender: Literal["Male", "Female"]) -> list[DogEntity]:
         dogs = Dog.objects.filter(name=name, age=age, gender=gender)
         return [self._adapter.to_entity(dog) for dog in dogs]
 
@@ -33,8 +32,8 @@ class DjangoORMDogsRepository(DogsRepository):
         return model
 
     @override
-    def get(self, oid: str) -> Optional[DogEntity]:
-        dog: Optional[Dog] = Dog.objects.get(oid=oid)
+    def get(self, oid: str) -> DogEntity | None:
+        dog: Dog | None = Dog.objects.get(oid=oid)
         return None if dog is None else self._adapter.to_entity(dog)
 
     @override
@@ -58,13 +57,13 @@ class DjangoORMDogsRepository(DogsRepository):
         return self.get(oid)
 
     @override
-    def list(self, start: int = 0, limit: int = 10) -> List[DogEntity]:
+    def list(self, start: int = 0, limit: int = 10) -> list[DogEntity]:
         return [self._adapter.to_entity(dog) for dog in Dog.objects.all()[start:limit]]
 
     @override
     def list_dogs_with_average_age_for_each_breed(
         self, start: int = 0, limit: int = 10
-    ) -> List[DogsWithAverageAgeForEachBreed]:
+    ) -> builtins.list[DogsWithAverageAgeForEachBreed]:
         # Получаем породы с их средним возрастом
         breeds_with_avg_age = Breed.objects.annotate(
             avg_age=Subquery(
@@ -75,7 +74,7 @@ class DjangoORMDogsRepository(DogsRepository):
             )
         )[start:limit]
 
-        result: List[DogsWithAverageAgeForEachBreed] = [
+        result: list[DogsWithAverageAgeForEachBreed] = [
             DogsWithAverageAgeForEachBreed(
                 breed_name=breed.name,
                 average_age=breed.avg_age or 0.0,  # type: ignore

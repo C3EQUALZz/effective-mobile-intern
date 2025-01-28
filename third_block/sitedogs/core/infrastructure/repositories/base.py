@@ -4,14 +4,11 @@ from abc import (
 )
 from typing import (
     Generic,
-    List,
-    Optional,
     TypeVar,
 )
 
-from dogs.domain.entities.base import BaseEntity
-from dogs.infrastructure.adapters.django_orm.base import BaseAdapter
-
+from core.domain.entities.base import BaseEntity
+from core.infrastructure.adapters.django_orm.base import BaseAdapter
 
 BaseEntityType = TypeVar("BaseEntityType", bound=BaseEntity)
 BaseAdapterType = TypeVar("BaseAdapterType", bound=BaseAdapter)
@@ -33,7 +30,7 @@ class AbstractRepository(ABC, Generic[BaseEntityType, BaseAdapterType]):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, oid: str) -> Optional[BaseEntityType]:
+    def get(self, oid: str) -> BaseEntityType | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -45,5 +42,5 @@ class AbstractRepository(ABC, Generic[BaseEntityType, BaseAdapterType]):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self, start: int = 0, limit: int = 10) -> List[BaseEntityType]:
+    def list(self, start: int = 0, limit: int = 10) -> list[BaseEntityType]:
         raise NotImplementedError

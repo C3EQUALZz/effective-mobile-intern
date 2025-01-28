@@ -1,4 +1,5 @@
 import anydi
+
 from dogs.infrastructure.adapters.django_orm.breeds import BreedsAdapter
 from dogs.infrastructure.adapters.django_orm.dogs import DogsAdapter
 from dogs.infrastructure.repositories.breeds.base import BreedsRepository

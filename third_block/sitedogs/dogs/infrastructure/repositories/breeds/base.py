@@ -1,16 +1,14 @@
+import builtins
 from abc import (
     ABC,
     abstractmethod,
 )
-from typing import (
-    List,
-    Optional,
-)
+
+from core.infrastructure.repositories.base import AbstractRepository
 
 from dogs.domain.entities.breed import BreedEntity
 from dogs.infrastructure.adapters.django_orm.breeds import BreedsAdapter
 from dogs.infrastructure.adapters.dto.breeds import BreedWithCountOfDogs
-from dogs.infrastructure.repositories.base import AbstractRepository
 
 
 class BreedsRepository(AbstractRepository[BreedEntity, BreedsAdapter], ABC):
@@ -28,7 +26,7 @@ class BreedsRepository(AbstractRepository[BreedEntity, BreedsAdapter], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, oid: str) -> Optional[BreedEntity]:
+    def get(self, oid: str) -> BreedEntity | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -36,9 +34,9 @@ class BreedsRepository(AbstractRepository[BreedEntity, BreedsAdapter], ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self, start: int = 0, limit: int = 10) -> List[BreedEntity]:
+    def list(self, start: int = 0, limit: int = 10) -> list[BreedEntity]:
         raise NotImplementedError
 
     @abstractmethod
-    def list_with_count_for_each_breed(self, start: int = 0, limit: int = 10) -> List[BreedWithCountOfDogs]:
+    def list_with_count_for_each_breed(self, start: int = 0, limit: int = 10) -> builtins.list[BreedWithCountOfDogs]:
         raise NotImplementedError

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from dogs.domain.entities.base import BaseEntity
+from core.domain.entities.base import BaseEntity
+
 from dogs.domain.entities.breed import BreedEntity
 from dogs.domain.values.dog import (
     Age,
