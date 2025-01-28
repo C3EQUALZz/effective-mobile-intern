@@ -310,5 +310,6 @@ make all
 
 ## Документация Swagger
 
+![изображение](https://github.com/user-attachments/assets/09497d4f-b7b2-4873-8e91-55e7dfce92dd)
 
 
