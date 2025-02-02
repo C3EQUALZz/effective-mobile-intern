@@ -16,7 +16,7 @@ from app.application.api.trading_result.schemas import (
     ParseAllBulletinsSpimexRequest,
     TradingResultsSpimexRequest,
 )
-from app.exceptions import ApplicationException
+from app.exceptions.base import ApplicationException
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
 from app.logic.bootstrap import (
     Bootstrap,
@@ -61,6 +61,7 @@ async def get_last_trading_dates(
         return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
     except ApplicationException as e:
+        logger.error(e.message)
         raise HTTPException(status_code=e.status, detail=e.message)
 
 
@@ -95,6 +96,7 @@ async def get_dynamics(
         return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
     except ApplicationException as e:
+        logger.error(e.message)
         raise HTTPException(status_code=e.status, detail=e.message)
 
 
@@ -123,6 +125,7 @@ async def get_product_by_exchange_product_id(
         return [TradingResultsSpimexRequest.from_entity(x) for x in messagebus.command_result]
 
     except ApplicationException as e:
+        logger.error(e.message)
         raise HTTPException(status_code=e.status, detail=e.message)
 
 

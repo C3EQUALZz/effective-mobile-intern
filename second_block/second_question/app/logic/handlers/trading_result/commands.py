@@ -11,13 +11,15 @@ from app.logic.commands.trading_result import (
     ParseAllBulletinsFromSphinx,
 )
 from app.logic.handlers.trading_result.base import TradingResultCommandHandler
+from infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
 
 
 class ParseAllBulletinsFromSphinxCommandHandler(TradingResultCommandHandler[ParseAllBulletinsFromSphinx]):
     async def __call__(self, command: ParseAllBulletinsFromSphinx) -> None:
         trading_result_service: TradingResultService = TradingResultService(self._uow)
         parser: SpimexAllBulletinsParser = SpimexAllBulletinsParser(AiohttpFetcher())
-        await trading_result_service.parse_and_add_to_database(parser, command.start_date, command.end_date)
+        converter: ExcelDocumentConverter = ExcelDocumentConverter()
+        await trading_result_service.parse_and_add_to_database(parser, converter, command.start_date, command.end_date)
 
 
 class GetByExchangeProductIdCommandHandler(TradingResultCommandHandler[GetByExchangeProductId]):
