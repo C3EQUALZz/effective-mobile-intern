@@ -8,6 +8,7 @@ from dishka import (
     make_async_container,
     provide,
 )
+from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -53,6 +54,18 @@ class HandlerProvider(Provider):
         return cast(EventHandlerMapping, {})
 
 
+class RedisProvider(Provider):
+    settings = from_context(provides=Settings, scope=Scope.APP)
+
+    @provide(scope=Scope.APP)
+    async def get_connection_pool(self, settings: Settings) -> ConnectionPool:
+        return ConnectionPool.from_url(str(settings.cache.url), encoding="utf8", decode_responses=True)
+
+    @provide(scope=Scope.APP)
+    async def get_client(self, pool: ConnectionPool) -> Redis:
+        return Redis.from_pool(pool)
+
+
 class DatabaseProvider(Provider):
     settings = from_context(provides=Settings, scope=Scope.APP)
 
@@ -91,6 +104,7 @@ class UoWProvider(Provider):
 container = make_async_container(
     DatabaseProvider(),
     HandlerProvider(),
+    RedisProvider(),
     UoWProvider(),
     context={
         Settings: Settings(),

@@ -1,7 +1,7 @@
 from abc import ABC
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, RedisDsn
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
@@ -55,6 +55,16 @@ class SQLAlchemySettings(CommonSettings):
     expire_on_commit: bool = Field(alias="DATABASE_EXPIRE_ON_COMMIT")
 
 
+class RedisSettings(CommonSettings):
+    host: str = Field(alias="REDIS_HOST")
+    port: int = Field(alias="REDIS_PORT")
+    password: str = Field(alias="REDIS_PASSWORD")
+
+    @property
+    def url(self) -> RedisDsn:
+        return RedisDsn(f"redis://{self.host}:{self.port}/{self.password}")
+
+
 class Settings(CommonSettings):
     """
     Класс настроек, которым в дальнейшем будет оперировать приложение.
@@ -62,3 +72,4 @@ class Settings(CommonSettings):
 
     database: DatabaseSettings = DatabaseSettings()
     alchemy_settings: SQLAlchemySettings = SQLAlchemySettings()
+    cache: RedisSettings = RedisSettings()
