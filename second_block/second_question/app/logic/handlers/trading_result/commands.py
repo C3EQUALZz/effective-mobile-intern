@@ -1,5 +1,5 @@
 from app.domain.entities.trading_result import TradingResultEntity
-from app.infrastructure.exceptions import NoSuchTradingEntityException
+from app.exceptions.infrastructure import NoSuchTradingEntityException
 from app.infrastructure.services.parsers.trading_result.spimex.browser_automation.all_bulletins import (
     SpimexAllBulletinsParser,
 )
@@ -11,7 +11,7 @@ from app.logic.commands.trading_result import (
     ParseAllBulletinsFromSphinx,
 )
 from app.logic.handlers.trading_result.base import TradingResultCommandHandler
-from infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
+from app.infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
 
 
 class ParseAllBulletinsFromSphinxCommandHandler(TradingResultCommandHandler[ParseAllBulletinsFromSphinx]):

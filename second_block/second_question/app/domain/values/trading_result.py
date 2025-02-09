@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import override
 
 from app.domain.values.base import BaseValueObject
-from exceptions.domain import VolumeException, CountException, TotalException
+from app.exceptions.domain import VolumeException, CountException, TotalException
 
 
 @dataclass(frozen=True)

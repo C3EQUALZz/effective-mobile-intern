@@ -3,7 +3,7 @@ from datetime import date
 from io import BytesIO
 from typing import AsyncGenerator
 
-from domain.entities.trading_result import TradingResultEntity
+from app.domain.entities.trading_result import TradingResultEntity
 
 
 class AbstractDocumentConverter(ABC):

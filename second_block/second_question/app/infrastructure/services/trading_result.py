@@ -2,13 +2,13 @@ import logging
 from datetime import date
 
 from app.domain.entities.trading_result import TradingResultEntity
-from app.infrastructure.exceptions import (
+from app.exceptions.infrastructure import (
     AttributeException,
     NoSuchTradingEntityException,
 )
 from app.infrastructure.services.parsers.trading_result.spimex.base import AbstractSpimexParser
 from app.infrastructure.uow.trading_result.base import TradingResultUnitOfWork
-from infrastructure.utils.converters.trading_results.base import AbstractDocumentConverter
+from app.infrastructure.utils.converters.trading_results.base import AbstractDocumentConverter
 
 logger = logging.getLogger(__name__)
 

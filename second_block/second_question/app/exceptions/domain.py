@@ -1,4 +1,4 @@
-from exceptions.base import ApplicationException
+from app.exceptions.base import ApplicationException
 from dataclasses import dataclass
 from abc import ABC
 from http import HTTPStatus
@@ -34,3 +34,12 @@ class TotalException(DomainException):
     @property
     def message(self) -> str:
         return "Total can't be negative"
+
+
+@dataclass(eq=False)
+class CastException(DomainException):
+    text: str
+
+    @property
+    def message(self) -> str:
+        return f"Failed to cast field {self.text}"
