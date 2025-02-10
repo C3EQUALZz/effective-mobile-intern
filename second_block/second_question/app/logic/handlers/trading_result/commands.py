@@ -1,17 +1,19 @@
+from datetime import date
+
 from app.domain.entities.trading_result import TradingResultEntity
 from app.exceptions.infrastructure import NoSuchTradingEntityException
 from app.infrastructure.services.parsers.trading_result.spimex.browser_automation.all_bulletins import (
     SpimexAllBulletinsParser,
 )
 from app.infrastructure.services.trading_result import TradingResultService
+from app.infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
 from app.infrastructure.utils.fetchers.aio_http import AiohttpFetcher
 from app.logic.commands.trading_result import (
     GetByExchangeProductId,
     GetListOfTradesForSpecifiedPeriod,
-    ParseAllBulletinsFromSphinx,
+    ParseAllBulletinsFromSphinx, GetLastTradingDates,
 )
 from app.logic.handlers.trading_result.base import TradingResultCommandHandler
-from app.infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
 
 
 class ParseAllBulletinsFromSphinxCommandHandler(TradingResultCommandHandler[ParseAllBulletinsFromSphinx]):
@@ -51,3 +53,10 @@ class GetListOfTradesForSpecifiedPeriodCommandHandler(TradingResultCommandHandle
             raise NoSuchTradingEntityException(f"by period {command.start_date} - {command.end_date}")
 
         return trading_result_entities
+
+
+class GetTradingResultByDayCommandHandler(TradingResultCommandHandler[GetLastTradingDates]):
+    async def __call__(self, command: GetLastTradingDates) -> list[date]:
+        trading_result_service: TradingResultService = TradingResultService(self._uow)
+
+        trading_result_service.get_list_by_date_period()

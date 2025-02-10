@@ -66,7 +66,7 @@ async def get_last_trading_dates(
 
 
 @router.get("/last-trading-result")
-async def get_last_trading_result(): ...
+async def get_trading_result(): ...
 
 
 @router.get("/dynamics/{start_date}&{end_date}")

@@ -11,17 +11,17 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.orm import clear_mappers
 
 from app.application.api.trading_result import trading_result_router
-from app.application.jobs import base
 from app.application.utils.cache import cache
 from app.infrastructure.adapters.alchemy.metadata import metadata
 from app.infrastructure.adapters.alchemy.orm import start_mappers
 from app.logic.container import container
+from app.application.jobs.main import broker
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    if not base.broker.is_worker_process:
-        await base.broker.startup()
+    if not broker.is_worker_process:
+        await broker.startup()
 
     engine: AsyncEngine = await container.get(AsyncEngine)
     async with engine.begin() as conn:
@@ -34,8 +34,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield
 
-    if not base.broker.is_worker_process:
-        await base.broker.shutdown()
+    if not broker.is_worker_process:
+        await broker.shutdown()
 
     await app.state.dishka_container.close()
     clear_mappers()
