@@ -32,7 +32,7 @@ app-down:
 	$(DC) -f $(APP_FILE) ${ENV} down
 
 .PHONY: cache-down
-cache:
+cache-down:
 	$(DC) -f $(CACHE_FILE) $(ENV) down
 
 .PHONY: storages-down

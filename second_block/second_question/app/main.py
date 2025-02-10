@@ -2,23 +2,20 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from dishka.integrations.fastapi import setup_dishka as setup_dishka_fastapi
-from dishka.integrations.taskiq import setup_dishka as setup_dishka_taskiq
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import AsyncEngine
-from sqlalchemy.orm import clear_mappers
 from redis.asyncio import (
     ConnectionPool,
     Redis,
 )
-from taskiq import AsyncBroker, InMemoryBroker
+from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.orm import clear_mappers
 
 from app.application.api.trading_result import trading_result_router
+from app.application.jobs import base
+from app.application.utils.cache import cache
 from app.infrastructure.adapters.alchemy.metadata import metadata
 from app.infrastructure.adapters.alchemy.orm import start_mappers
-from app.application.utils.cache import cache
 from app.logic.container import container
-from app.application.utils.initalizators.broker import init as broker_init
-from app.application.jobs import base
 
 
 @asynccontextmanager
@@ -53,10 +50,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    broker_init(base.broker, app)
-
     setup_dishka_fastapi(container=container, app=app)
-    setup_dishka_taskiq(container=container, broker=base.broker)
 
     app.include_router(trading_result_router)
 

@@ -1,14 +1,17 @@
 from typing import Awaitable, Callable, Union
 
+from dishka.integrations.taskiq import setup_dishka
 from fastapi import FastAPI, Request
 from starlette.requests import HTTPConnection
 from taskiq import AsyncBroker, TaskiqEvents, TaskiqState
 from taskiq.cli.utils import import_object
 
+from app.logic.container import container
+
 
 def startup_event_generator(
-    broker: AsyncBroker,
-    app_or_path: Union[str, FastAPI],
+        broker: AsyncBroker,
+        app_or_path: Union[str, FastAPI],
 ) -> Callable[[TaskiqState], Awaitable[None]]:
     """
     Generate shutdown event.
@@ -30,14 +33,14 @@ def startup_event_generator(
             app = app_or_path
 
         if not isinstance(app, FastAPI):
-            app = app() # type: ignore
+            app = app()  # type: ignore
 
         if not isinstance(app, FastAPI):
             raise ValueError(f"'{app_or_path}' is not a FastAPI application.")
 
         state.fastapi_app = app
-        await app.router.startup() # type: ignore
-        state.lf_ctx = app.router.lifespan_context(app) # type: ignore
+        await app.router.startup()  # type: ignore
+        state.lf_ctx = app.router.lifespan_context(app)  # type: ignore
         await state.lf_ctx.__aenter__()
         populate_dependency_context(broker, app)
 
@@ -45,7 +48,7 @@ def startup_event_generator(
 
 
 def shutdown_event_generator(
-    broker: AsyncBroker,
+        broker: AsyncBroker,
 ) -> Callable[[TaskiqState], Awaitable[None]]:
     """
     Generate shutdown event.
@@ -66,31 +69,6 @@ def shutdown_event_generator(
     return shutdown
 
 
-def init(broker: AsyncBroker, app_or_path: Union[str, FastAPI]) -> None:
-    """
-    Add taskiq startup events.
-
-    This is the main function to integrate FastAPI
-    with taskiq.
-
-    It creates startup events for broker. So
-    in worker processes all fastapi
-    startup events will run.
-
-    :param broker: current broker to use.
-    :param app_or_path: path to fastapi application.
-    """
-    broker.add_event_handler(
-        TaskiqEvents.WORKER_STARTUP,
-        startup_event_generator(broker, app_or_path),
-    )
-
-    broker.add_event_handler(
-        TaskiqEvents.WORKER_SHUTDOWN,
-        shutdown_event_generator(broker),
-    )
-
-
 def populate_dependency_context(broker: AsyncBroker, app: FastAPI) -> None:
     """
     Populate dependency context.
@@ -109,3 +87,21 @@ def populate_dependency_context(broker: AsyncBroker, app: FastAPI) -> None:
             HTTPConnection: lambda: HTTPConnection(scope={"app": app, "type": "http"}),
         },
     )
+
+
+def configure_broker(broker: AsyncBroker) -> AsyncBroker:
+    app = "app.main:create_app"
+
+    broker.add_event_handler(
+        TaskiqEvents.WORKER_STARTUP,
+        startup_event_generator(broker, app),
+    )
+
+    broker.add_event_handler(
+        TaskiqEvents.WORKER_SHUTDOWN,
+        shutdown_event_generator(broker),
+    )
+
+    setup_dishka(container=container, broker=broker)
+
+    return broker
