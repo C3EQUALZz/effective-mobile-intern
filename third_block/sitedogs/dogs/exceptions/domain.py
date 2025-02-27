@@ -2,7 +2,7 @@ from abc import ABC
 from dataclasses import dataclass
 from http import HTTPStatus
 
-from app.exceptions import ApplicationException
+from core.exceptions.base import ApplicationException
 
 
 @dataclass(eq=False)
@@ -26,66 +26,72 @@ class CastException(DomainException):
 
 
 @dataclass(eq=False)
-class InvalidUsernameLengthException(DomainException):
-    username_value: str
-
-    @property
-    def message(self) -> str:
-        return f"Username length is invalid: {self.username_value}"
-
-
-@dataclass(eq=False)
-class EmptyUsernameException(DomainException):
-    @property
-    def message(self) -> str:
-        return "Username is empty"
-
-
-@dataclass(eq=False)
-class EmptyPasswordException(DomainException):
-    @property
-    def message(self) -> str:
-        return "Password is empty"
-
-
-@dataclass(eq=False)
-class InvalidPasswordLengthException(DomainException):
-    length: str
-
-    @property
-    def message(self) -> str:
-        return f"Password length is invalid: {self.length}"
-
-
-@dataclass(eq=False)
-class EmptyEmailException(DomainException):
-    @property
-    def message(self) -> str:
-        return "Email is empty"
-
-
-@dataclass(eq=False)
-class InvalidEmailException(DomainException):
-    email: str
-
-    @property
-    def message(self) -> str:
-        return f"The provided email is invalid: {self.email}"
-
-
-@dataclass(eq=False)
-class InvalidOIDException(DomainException):
-    oid: str
-
-    @property
-    def message(self) -> str:
-        return f"The provided OID is invalid: {self.oid}"
-
-
-@dataclass(eq=False)
-class EmptyScoreException(DomainException):
+class BadNameException(DomainException):
     value: str
 
     @property
     def message(self) -> str:
-        return f"The provided value is empty: {self.value}"
+        return f"Name {self.value} is invalid, don't use digits, only letters"
+
+
+@dataclass(eq=False)
+class BadDogAgeException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Dog age {self.value} is invalid"
+
+
+@dataclass(eq=False)
+class BadDogGenException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Dog gen {self.value} is invalid. It can be only: female, male."
+
+
+@dataclass(eq=False)
+class BadDogColorException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Dog color {self.value} is invalid"
+
+
+@dataclass(eq=False)
+class BadDogFavouriteFoodException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Dog food {self.value} is invalid"
+
+
+@dataclass(eq=False)
+class BadDogFavouriteToyException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Dog toy {self.value} is invalid"
+
+
+@dataclass(eq=False)
+class BadSizeException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Size {self.value} is invalid. It can be only: 'Tiny', 'Small', 'Medium', 'Large'"
+
+
+@dataclass(eq=False)
+class BadValueBreedException(DomainException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Value is invalid. {self.value}"

@@ -8,6 +8,7 @@ from dishka import (
     make_async_container,
     provide,
 )
+from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -24,12 +25,12 @@ from app.logic.bootstrap import (
 from app.logic.commands.trading_result import (
     GetByExchangeProductId,
     GetListOfTradesForSpecifiedPeriod,
-    ParseAllBulletinsFromSphinx,
+    ParseAllBulletinsFromSphinx, GetTradingResults, GetLastTradingDates,
 )
 from app.logic.handlers.trading_result.commands import (
     GetByExchangeProductIdCommandHandler,
     GetListOfTradesForSpecifiedPeriodCommandHandler,
-    ParseAllBulletinsFromSphinxCommandHandler,
+    ParseAllBulletinsFromSphinxCommandHandler, GetLastTradingDatesCommandHandler, GetTradingResultsCommandHandler,
 )
 from app.settings.config import Settings
 
@@ -45,12 +46,26 @@ class HandlerProvider(Provider):
                 ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
                 GetByExchangeProductId: GetByExchangeProductIdCommandHandler,
                 GetListOfTradesForSpecifiedPeriod: GetListOfTradesForSpecifiedPeriodCommandHandler,
+                GetLastTradingDates: GetLastTradingDatesCommandHandler,
+                GetTradingResults: GetTradingResultsCommandHandler
             },
         )
 
     @provide(scope=Scope.APP)
     async def get_mapping_event_and_event_handlers(self) -> EventHandlerMapping:
         return cast(EventHandlerMapping, {})
+
+
+class RedisProvider(Provider):
+    settings = from_context(provides=Settings, scope=Scope.APP)
+
+    @provide(scope=Scope.APP)
+    async def get_connection_pool(self, settings: Settings) -> ConnectionPool:
+        return ConnectionPool.from_url(str(settings.cache.url), encoding="utf8")
+
+    @provide(scope=Scope.APP)
+    async def get_client(self, pool: ConnectionPool) -> Redis:
+        return Redis.from_pool(pool)
 
 
 class DatabaseProvider(Provider):
@@ -91,6 +106,7 @@ class UoWProvider(Provider):
 container = make_async_container(
     DatabaseProvider(),
     HandlerProvider(),
+    RedisProvider(),
     UoWProvider(),
     context={
         Settings: Settings(),

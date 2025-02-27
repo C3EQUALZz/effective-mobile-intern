@@ -1,13 +1,36 @@
 services:
-  pacman-app-backend:
+  parser-app-backend:
     container_name: parser-app-backend
     image: parser-app-backend
     build:
       context: ..
       dockerfile: Dockerfile
     command: "uvicorn --factory app.main:create_app --reload --host 0.0.0.0 --port 8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
     ports:
       - "${API_PORT}:8000"
+    env_file:
+      - ../.env
+    networks:
+      - backend
+
+  task_iq_worker_app_backend:
+    container_name: parser-app-backend-taskiq
+    image: parser-app-backend
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    command: "taskiq scheduler app.application.jobs.main:scheduler"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    ports: []
     env_file:
       - ../.env
     networks:

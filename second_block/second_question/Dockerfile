@@ -3,6 +3,7 @@ FROM python:3.12.1-slim-bullseye AS builder
 COPY poetry.lock pyproject.toml ./
 
 RUN python -m pip install poetry==2.0.1 && \
+    poetry self add poetry-plugin-export && \
     poetry export -o requirements.prod.txt --without-hashes
 
 FROM python:3.12.1-slim-bullseye AS dev
@@ -17,7 +18,9 @@ COPY --from=builder requirements.prod.txt /app
 
 RUN apt update -y && \
     apt install -y python3-dev && \
-    pip install --upgrade pip && pip install --no-cache-dir -r requirements.prod.txt \
-    playwright install chromium
+    pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.prod.txt && \
+    playwright install chromium && \
+    playwright install-deps
 
 COPY . /app/

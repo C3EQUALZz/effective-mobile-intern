@@ -1,14 +1,17 @@
+from datetime import date, timedelta
+
 from app.domain.entities.trading_result import TradingResultEntity
-from app.infrastructure.exceptions import NoSuchTradingEntityException
+from app.exceptions.infrastructure import NoSuchTradingEntityException
 from app.infrastructure.services.parsers.trading_result.spimex.browser_automation.all_bulletins import (
     SpimexAllBulletinsParser,
 )
 from app.infrastructure.services.trading_result import TradingResultService
+from app.infrastructure.utils.converters.trading_results.excel import ExcelDocumentConverter
 from app.infrastructure.utils.fetchers.aio_http import AiohttpFetcher
 from app.logic.commands.trading_result import (
     GetByExchangeProductId,
     GetListOfTradesForSpecifiedPeriod,
-    ParseAllBulletinsFromSphinx,
+    ParseAllBulletinsFromSphinx, GetLastTradingDates, GetTradingResults,
 )
 from app.logic.handlers.trading_result.base import TradingResultCommandHandler
 
@@ -17,7 +20,8 @@ class ParseAllBulletinsFromSphinxCommandHandler(TradingResultCommandHandler[Pars
     async def __call__(self, command: ParseAllBulletinsFromSphinx) -> None:
         trading_result_service: TradingResultService = TradingResultService(self._uow)
         parser: SpimexAllBulletinsParser = SpimexAllBulletinsParser(AiohttpFetcher())
-        await trading_result_service.parse_and_add_to_database(parser, command.start_date, command.end_date)
+        converter: ExcelDocumentConverter = ExcelDocumentConverter()
+        await trading_result_service.parse_and_add_to_database(parser, converter, command.start_date, command.end_date)
 
 
 class GetByExchangeProductIdCommandHandler(TradingResultCommandHandler[GetByExchangeProductId]):
@@ -49,3 +53,41 @@ class GetListOfTradesForSpecifiedPeriodCommandHandler(TradingResultCommandHandle
             raise NoSuchTradingEntityException(f"by period {command.start_date} - {command.end_date}")
 
         return trading_result_entities
+
+
+class GetLastTradingDatesCommandHandler(TradingResultCommandHandler[GetLastTradingDates]):
+    async def __call__(self, command: GetLastTradingDates) -> list[date]:
+        trading_result_service: TradingResultService = TradingResultService(self._uow)
+
+        end_data: date = date.today()
+        start_date: date = end_data - timedelta(days=command.count_of_days - 1)
+
+        dates = await trading_result_service.get_dates(
+            start_date=start_date,
+            end_date=end_data,
+            page_number=command.page_number,
+            page_size=command.page_size
+        )
+
+        if not dates:
+            raise NoSuchTradingEntityException(f"by period {start_date} - {end_data}")
+
+        return dates
+
+
+class GetTradingResultsCommandHandler(TradingResultCommandHandler[GetTradingResults]):
+    async def __call__(self, command: GetTradingResults) -> list[TradingResultEntity]:
+        trading_result_service: TradingResultService = TradingResultService(self._uow)
+
+        trading_results = await trading_result_service.get_trading_results_filtered(
+            oil_id=command.oil_id,
+            delivery_type_id=command.delivery_type_id,
+            delivery_basis_id=command.delivery_basis_id,
+            page_number=command.page_number,
+            page_size=command.page_size,
+        )
+
+        if not trading_results:
+            raise NoSuchTradingEntityException("by your custom parameters")
+
+        return trading_results

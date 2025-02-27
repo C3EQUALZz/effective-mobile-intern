@@ -4,6 +4,7 @@ from abc import (
     abstractmethod,
 )
 from datetime import date
+from typing import Optional
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.infrastructure.repositories.base import AbstractRepository
@@ -71,4 +72,25 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
 
     @abstractmethod
     async def delete(self, oid: str) -> TradingResultEntity | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def list_filtered(
+            self,
+            oil_id: Optional[str],
+            delivery_type_id: Optional[str],
+            delivery_basis_id: Optional[str],
+            start: int = 0,
+            limit: int = 10
+    ) -> builtins.list[TradingResultEntity]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_unique_trading_dates(
+            self,
+            start_date: date,
+            end_date: date,
+            start: int = 0,
+            limit: int = 10
+    ) -> builtins.list[date]:
         raise NotImplementedError

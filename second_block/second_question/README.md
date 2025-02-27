@@ -33,7 +33,7 @@
 ## Что использовалось? 
 
 - [playwright](https://playwright.dev/)
-- [fastapi](https://playwright.dev/)
+- [fastapi]()
 - [dishka](https://dishka.readthedocs.io/en/stable/)
 - [pandas](https://pandas.pydata.org/)
 - [aiohttp](https://docs.aiohttp.org/en/stable/)
