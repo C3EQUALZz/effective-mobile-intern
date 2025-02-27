@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from datetime import date
 from typing import (
     Any,
-    override
+    override, Optional
 )
 
 from sqlalchemy import (
@@ -14,8 +14,7 @@ from sqlalchemy import (
     delete,
     insert,
     select,
-    update,
-)
+    update, )
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.infrastructure.repositories.base import SQLAlchemyAbstractRepository
@@ -158,3 +157,30 @@ class SQLAlchemyTradingResultRepository(SQLAlchemyAbstractRepository, TradingRes
     @override
     async def delete(self, oid: str) -> None:
         await self._session.execute(delete(TradingResultEntity).filter_by(oid=oid))
+
+    @override
+    async def list_filtered(
+            self,
+            oil_id: Optional[str],
+            delivery_type_id: Optional[str],
+            delivery_basis_id: Optional[str],
+            start: int = 0,
+            limit: int = 10
+    ) -> builtins.list[TradingResultEntity]:
+
+        result: Result = await self._session.execute(
+            select(TradingResultEntity).filter_by(
+                oil_id=oil_id,
+                delivery_type_id=delivery_type_id,
+                delivery_basis_id=delivery_basis_id
+            ).offset(start).limit(limit)
+        )
+
+        trading_result_entities: Sequence[Row | RowMapping | Any] = result.scalars().all()
+
+        assert isinstance(trading_result_entities, list)
+
+        for entity in trading_result_entities:
+            assert isinstance(entity, TradingResultEntity)
+
+        return trading_result_entities

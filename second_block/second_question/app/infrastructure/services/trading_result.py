@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+from typing import Optional
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.exceptions.infrastructure import (
@@ -17,6 +18,12 @@ class TradingResultService:
     def __init__(self, uow: TradingResultUnitOfWork) -> None:
         self._uow = uow
 
+    @staticmethod
+    def __calculate_paging(page_number: int, page_size: int) -> tuple[int, int]:
+        start: int = (page_number - 1) * page_size
+        limit: int = start + page_size
+        return start, limit
+
     async def get_by_exchange_product_id(
             self,
             exchange_product_id: str,
@@ -24,8 +31,7 @@ class TradingResultService:
             page_size: int
     ) -> list[TradingResultEntity]:
 
-        start: int = (page_number - 1) * page_size
-        limit: int = start + page_size
+        start, limit = self.__calculate_paging(page_number, page_size)
 
         async with self._uow as uow:
             trading_result_entity: list[TradingResultEntity] = await uow.products_market.get_by_exchange_product_id(
@@ -46,8 +52,7 @@ class TradingResultService:
             page_size: int
     ) -> list[TradingResultEntity]:
 
-        start: int = (page_number - 1) * page_size
-        limit: int = start + page_size
+        start, limit = self.__calculate_paging(page_number, page_size)
 
         async with self._uow as uow:
             trading_result_entity: list[TradingResultEntity] = await uow.products_market.get_by_exchange_product_name(
@@ -60,6 +65,29 @@ class TradingResultService:
                 raise NoSuchTradingEntityException(exchange_product_name)
 
             return trading_result_entity
+
+    async def get_trading_results_filtered(
+            self,
+            oil_id: Optional[str],
+            delivery_type_id: Optional[str],
+            delivery_basis_id: Optional[str],
+            page_number: int,
+            page_size: int
+    ):
+        start, limit = self.__calculate_paging(page_number, page_size)
+        async with self._uow as uow:
+            trading_result_entities: list[TradingResultEntity] = await uow.products_market.list_filtered(
+                oil_id=oil_id,
+                delivery_type_id=delivery_type_id,
+                delivery_basis_id=delivery_basis_id,
+                start=start,
+                limit=limit,
+            )
+
+            if not trading_result_entities:
+                raise NoSuchTradingEntityException(f"{oil_id=}, {delivery_type_id=}, {delivery_basis_id=}")
+
+            return trading_result_entities
 
     async def get_list_by_date_period(
             self,
@@ -121,7 +149,7 @@ class TradingResultService:
 
             async for date_of_creation, file_content in generator_of_results:  # type: ignore
                 try:
-                    async for trading_result in converter.convert(file_content, date_of_creation): # type: ignore
+                    async for trading_result in converter.convert(file_content, date_of_creation):  # type: ignore
                         await uow.products_market.add(trading_result)
                 except ValueError as e:
                     logger.error("Error while parsing data from pandas file: %s", e)

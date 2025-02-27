@@ -3,7 +3,8 @@ from sqlalchemy import (
     DateTime,
     String,
     Table,
-    Uuid
+    Uuid,
+    Computed
 )
 
 from app.infrastructure.adapters.alchemy.metadata import (
@@ -19,10 +20,10 @@ spimex_trading_results_table = Table(
     Column("oid", Uuid, primary_key=True),
     Column("exchange_product_id", String),
     Column("exchange_product_name", String),
-    Column("oil_id", String),
-    Column("delivery_basis_id", String),
+    Column("oil_id", String, Computed("substring(exchange_product_id from 1 for 4)")),
+    Column("delivery_basis_id", String, Computed("substring(exchange_product_id from 5 for 3)")),
     Column("delivery_basis_name", String),
-    Column("delivery_type_id", String),
+    Column("delivery_type_id", String, Computed("substring(exchange_product_id from 8 for 1)")),
     Column("volume", VolumeDecorator),
     Column("total", TotalDecorator),
     Column("count", CountDecorator),

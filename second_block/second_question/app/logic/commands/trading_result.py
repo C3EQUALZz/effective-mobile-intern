@@ -56,3 +56,5 @@ class GetTradingResults(AbstractCommand):
     oil_id: str
     delivery_type_id: str
     delivery_basis_id: str
+    page_number: int
+    page_size: int
