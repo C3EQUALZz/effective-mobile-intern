@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from app.domain.entities.trading_result import TradingResultEntity
 from app.exceptions.infrastructure import NoSuchTradingEntityException
@@ -59,4 +59,19 @@ class GetTradingResultByDayCommandHandler(TradingResultCommandHandler[GetLastTra
     async def __call__(self, command: GetLastTradingDates) -> list[date]:
         trading_result_service: TradingResultService = TradingResultService(self._uow)
 
-        trading_result_service.get_list_by_date_period()
+        end_data: date = date.today()
+        start_date: date = end_data - timedelta(days=command.count_of_days)
+
+        trading_results = await trading_result_service.get_list_by_date_period(
+            start_date=start_date,
+            end_date=end_data,
+            page_number=command.page_number,
+            page_size=command.page_size
+        )
+
+        result = [trading.date for trading in trading_results]
+
+        if not result:
+            raise NoSuchTradingEntityException(f"by period {start_date} - {end_data}")
+
+        return result

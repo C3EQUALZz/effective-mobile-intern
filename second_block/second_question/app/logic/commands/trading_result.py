@@ -35,6 +35,7 @@ class ParseAllBulletinsFromSphinx(AbstractCommand):
     start_date: date
     end_date: date
 
+
 @dataclass(frozen=True)
 class GetListOfTradesForSpecifiedPeriod(AbstractCommand):
     start_date: date
@@ -45,6 +46,13 @@ class GetListOfTradesForSpecifiedPeriod(AbstractCommand):
 
 @dataclass(frozen=True)
 class GetLastTradingDates(AbstractCommand):
-    end_date: date
+    count_of_days: int
     page_number: int
     page_size: int
+
+
+@dataclass(frozen=True)
+class GetTradingResults(AbstractCommand):
+    oil_id: str
+    delivery_type_id: str
+    delivery_basis_id: str
