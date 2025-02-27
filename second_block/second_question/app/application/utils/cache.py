@@ -2,7 +2,7 @@ import functools
 import json
 import re
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Iterable
 
 from fastapi import (
     Request,
@@ -193,7 +193,7 @@ async def _delete_keys_by_pattern(pattern: str) -> None:
 
 def cache(
         key_prefix: str,
-        resource_id_name: Any = None,
+        resource_id_name: str | Iterable[str] | None = None,
         expiration: int = 3600,
         resource_id_type: type | tuple[type, ...] = int,
         to_invalidate_extra: dict[str, Any] | None = None,
@@ -301,7 +301,11 @@ def cache(
                 raise MissingClientError
 
             if resource_id_name:
-                resource_id = kwargs[resource_id_name]
+                if isinstance(resource_id_name, str):
+                    resource_id = kwargs[resource_id_name]
+                else:
+                    # Если resource_id_name — это кортеж, объединяем значения
+                    resource_id = ":".join(str(kwargs[name]) for name in resource_id_name)
             else:
                 resource_id = _infer_resource_id(kwargs=kwargs, resource_id_type=resource_id_type)
 

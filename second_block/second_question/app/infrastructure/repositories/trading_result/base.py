@@ -84,3 +84,13 @@ class TradingResultRepository(AbstractRepository[TradingResultEntity], ABC):
             limit: int = 10
     ) -> builtins.list[TradingResultEntity]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def get_unique_trading_dates(
+            self,
+            start_date: date,
+            end_date: date,
+            start: int = 0,
+            limit: int = 10
+    ) -> builtins.list[date]:
+        raise NotImplementedError

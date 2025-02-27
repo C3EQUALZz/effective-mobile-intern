@@ -55,26 +55,24 @@ class GetListOfTradesForSpecifiedPeriodCommandHandler(TradingResultCommandHandle
         return trading_result_entities
 
 
-class GetTradingResultByDayCommandHandler(TradingResultCommandHandler[GetLastTradingDates]):
+class GetLastTradingDatesCommandHandler(TradingResultCommandHandler[GetLastTradingDates]):
     async def __call__(self, command: GetLastTradingDates) -> list[date]:
         trading_result_service: TradingResultService = TradingResultService(self._uow)
 
         end_data: date = date.today()
-        start_date: date = end_data - timedelta(days=command.count_of_days)
+        start_date: date = end_data - timedelta(days=command.count_of_days - 1)
 
-        trading_results = await trading_result_service.get_list_by_date_period(
+        dates = await trading_result_service.get_dates(
             start_date=start_date,
             end_date=end_data,
             page_number=command.page_number,
             page_size=command.page_size
         )
 
-        result = [trading.date for trading in trading_results]
-
-        if not result:
+        if not dates:
             raise NoSuchTradingEntityException(f"by period {start_date} - {end_data}")
 
-        return result
+        return dates
 
 
 class GetTradingResultsCommandHandler(TradingResultCommandHandler[GetTradingResults]):

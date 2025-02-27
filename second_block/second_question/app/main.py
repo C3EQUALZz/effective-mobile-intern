@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.orm import clear_mappers
 
 from app.application.api.trading_result import trading_result_router
-from app.application.utils.cache import cache
+from app.application.utils import cache
 from app.infrastructure.adapters.alchemy.metadata import metadata
 from app.infrastructure.adapters.alchemy.orm import start_mappers
 from app.logic.container import container

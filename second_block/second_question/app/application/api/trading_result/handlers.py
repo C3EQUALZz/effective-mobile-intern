@@ -32,6 +32,7 @@ from app.logic.commands.trading_result import (
 from app.logic.message_bus import MessageBus
 from app.application.utils.cache import cache
 from typing import Optional
+from fastapi import Request
 
 router = APIRouter(prefix="/trading_result", tags=["trading_result"], route_class=DishkaRoute)
 
@@ -45,6 +46,7 @@ logger = logging.getLogger(__name__)
     resource_id_type=(int, int, int)
 )
 async def get_last_trading_dates(
+        request: Request, # noqa
         uow: FromDishka[TradingResultUnitOfWork],
         events: FromDishka[EventHandlerMapping],
         commands: FromDishka[CommandHandlerMapping],
@@ -73,7 +75,6 @@ async def get_last_trading_dates(
 
 
 @router.get("/last-trading-result")
-
 async def get_trading_results(
         uow: FromDishka[TradingResultUnitOfWork],
         events: FromDishka[EventHandlerMapping],
@@ -166,7 +167,7 @@ async def get_product_by_exchange_product_id(
         raise HTTPException(status_code=e.status, detail=e.message)
 
 
-@router.post("parse")
+@router.post("/parse")
 async def parse_all_bulletins_from_sphinx(
         scheme: ParseAllBulletinsSpimexRequest,
         uow: FromDishka[TradingResultUnitOfWork],

@@ -113,6 +113,29 @@ class TradingResultService:
 
             return trading_result_entities
 
+    async def get_dates(
+            self,
+            start_date: date,
+            end_date: date,
+            page_number: int,
+            page_size: int
+    ) -> list[date]:
+        start: int = (page_number - 1) * page_size
+        limit: int = start + page_size
+
+        async with self._uow as uow:
+            dates: list[date] = await uow.products_market.get_unique_trading_dates(
+                start_date=start_date,
+                end_date=end_date,
+                start=start,
+                limit=limit,
+            )
+
+            if not dates:
+                raise NoSuchTradingEntityException(f"by period {start_date} - {end_date}")
+
+            return dates
+
     async def check_existence(
             self,
             oid: str | None = None,

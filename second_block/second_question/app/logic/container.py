@@ -25,12 +25,12 @@ from app.logic.bootstrap import (
 from app.logic.commands.trading_result import (
     GetByExchangeProductId,
     GetListOfTradesForSpecifiedPeriod,
-    ParseAllBulletinsFromSphinx,
+    ParseAllBulletinsFromSphinx, GetTradingResults, GetLastTradingDates,
 )
 from app.logic.handlers.trading_result.commands import (
     GetByExchangeProductIdCommandHandler,
     GetListOfTradesForSpecifiedPeriodCommandHandler,
-    ParseAllBulletinsFromSphinxCommandHandler,
+    ParseAllBulletinsFromSphinxCommandHandler, GetLastTradingDatesCommandHandler, GetTradingResultsCommandHandler,
 )
 from app.settings.config import Settings
 
@@ -46,6 +46,8 @@ class HandlerProvider(Provider):
                 ParseAllBulletinsFromSphinx: ParseAllBulletinsFromSphinxCommandHandler,
                 GetByExchangeProductId: GetByExchangeProductIdCommandHandler,
                 GetListOfTradesForSpecifiedPeriod: GetListOfTradesForSpecifiedPeriodCommandHandler,
+                GetLastTradingDates: GetLastTradingDatesCommandHandler,
+                GetTradingResults: GetTradingResultsCommandHandler
             },
         )
 
@@ -59,7 +61,7 @@ class RedisProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def get_connection_pool(self, settings: Settings) -> ConnectionPool:
-        return ConnectionPool.from_url(str(settings.cache.url), encoding="utf8", decode_responses=True)
+        return ConnectionPool.from_url(str(settings.cache.url), encoding="utf8")
 
     @provide(scope=Scope.APP)
     async def get_client(self, pool: ConnectionPool) -> Redis:

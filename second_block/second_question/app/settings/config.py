@@ -62,7 +62,7 @@ class RedisSettings(CommonSettings):
 
     @property
     def url(self) -> RedisDsn:
-        return RedisDsn(f"redis://{self.host}:{self.port}/{self.password}")
+        return RedisDsn(f"redis://:{self.password}@{self.host}:{self.port}")
 
 
 class Settings(CommonSettings):
