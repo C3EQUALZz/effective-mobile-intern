@@ -6,7 +6,7 @@ from app.exceptions.domain import VolumeException, CountException, TotalExceptio
 
 
 @dataclass(frozen=True)
-class Count(BaseValueObject):
+class Count(BaseValueObject[int]):
     value: int
 
     @override
@@ -20,7 +20,7 @@ class Count(BaseValueObject):
 
 
 @dataclass(frozen=True)
-class Volume(BaseValueObject):
+class Volume(BaseValueObject[int]):
     value: int
 
     @override
@@ -34,7 +34,7 @@ class Volume(BaseValueObject):
 
 
 @dataclass(frozen=True)
-class Total(BaseValueObject):
+class Total(BaseValueObject[int]):
     value: int
 
     @override
