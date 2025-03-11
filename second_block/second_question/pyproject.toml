@@ -37,6 +37,8 @@ build-backend = "poetry.core.masonry.api"
 isort = "^5.13.2"
 ruff = "^0.9.2"
 pytest = "^8.3.5"
+pytest-asyncio = "^0.25.3"
+testcontainers = {extras = ["postgres"], version = "^4.9.2"}
 
 [tool.isort]
 multi_line_output=3
@@ -115,3 +117,9 @@ convention = "google"
 [tool.ruff.lint.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
+
+[tool.pytest.ini_options]
+testpaths = [
+    'tests',
+]
+addopts = "--asyncio-mode=auto"
