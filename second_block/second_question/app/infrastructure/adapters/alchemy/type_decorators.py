@@ -7,6 +7,7 @@ from app.domain.values.trading_result import Volume, Total, Count
 
 class VolumeDecorator(TypeDecorator):
     impl = Integer
+    cache_ok = True
 
     def process_bind_param(self, value: dict[Literal["value"], int], dialect: Dialect) -> int:
         if value is not None:
@@ -19,6 +20,7 @@ class VolumeDecorator(TypeDecorator):
 
 class TotalDecorator(TypeDecorator):
     impl = Integer
+    cache_ok = True
 
     def process_bind_param(self, money: dict[Literal["value"], int], dialect: Dialect) -> int:
         if money is not None:
@@ -31,6 +33,7 @@ class TotalDecorator(TypeDecorator):
 
 class CountDecorator(TypeDecorator):
     impl = Integer
+    cache_ok = True
 
     def process_bind_param(self, value: dict[Literal["value"], int], dialect: Dialect) -> int:
         if value is not None:

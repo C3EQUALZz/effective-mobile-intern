@@ -3,27 +3,25 @@ from sqlalchemy import (
     DateTime,
     String,
     Table,
-    Uuid,
-    Computed
+    func
 )
 
 from app.infrastructure.adapters.alchemy.metadata import (
     mapper_registry,
     metadata,
 )
-
 from app.infrastructure.adapters.alchemy.type_decorators import VolumeDecorator, TotalDecorator, CountDecorator
 
 spimex_trading_results_table = Table(
     "spimex_trading_results",
     metadata,
-    Column("oid", Uuid, primary_key=True),
+    Column("oid", String, primary_key=True),
     Column("exchange_product_id", String),
     Column("exchange_product_name", String),
-    Column("oil_id", String, Computed("substring(exchange_product_id from 1 for 4)")),
-    Column("delivery_basis_id", String, Computed("substring(exchange_product_id from 5 for 3)")),
+    Column("oil_id", String, server_default=func.substr("exchange_product_id", 1, 4)),
+    Column("delivery_basis_id", String, server_default=func.substr("exchange_product_id", 5, 3)),
     Column("delivery_basis_name", String),
-    Column("delivery_type_id", String, Computed("substring(exchange_product_id from 8 for 1)")),
+    Column("delivery_type_id", String, server_default=func.substr("exchange_product_id", 8, 1)),
     Column("volume", VolumeDecorator),
     Column("total", TotalDecorator),
     Column("count", CountDecorator),
