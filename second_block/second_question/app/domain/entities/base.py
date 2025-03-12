@@ -21,18 +21,6 @@ class BaseEntity(ABC):
 
     oid: str = field(default_factory=lambda: str(uuid4()), kw_only=True)
 
-    def __post_init__(self) -> None:
-        for field_name, field_type in get_type_hints(self).items():
-            if field_name == "oid":
-                continue
-
-            value = getattr(self, field_name, None)
-            if not isinstance(value, field_type):
-                try:
-                    setattr(self, field_name, field_type(value))
-                except (ValueError, TypeError):
-                    raise CastException(f"'{field_name}' with value '{value}' to {field_type}")
-
     async def to_dict(self, exclude: set[str] | None = None, include: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Create a dictionary representation of the entity.
